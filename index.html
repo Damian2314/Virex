@@ -2,470 +2,810 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>VIREX — AI Writing Toolkit</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Humanize text, generate cover letters, and create social posts. 2 free generations." />
-
-  <!-- FAVICON -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234f46e5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M22 42l6-2 18-18c1.1-1.1 1.1-2.9 0-4l-.9-.9c-1.1-1.1-2.9-1.1-4 0L23 35l-1 7z' fill='white'/%3E%3Cpath d='M38 18l8 8' stroke='rgba(255,255,255,.55)' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E">
-  <meta name="theme-color" content="#0b0b13">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="description" content="VIREX — AI Writing Toolkit: Humanize, Cover Letter, Social Post." />
+  <meta name="theme-color" content="#0b0f19"/>
 
   <style>
     :root{
-      --bg:#0b0b13;
-      --card:#111225;
-      --text:#e9e9ff;
-      --muted:#a7a7c9;
+      --bg:#070a12;
+      --panel:#0b1020;
+      --panel2:#0a0f1d;
+      --card:#0b132a;
+      --card2:#0a1226;
+      --text:#e9ecf5;
+      --muted:#a7b0c3;
       --line:rgba(255,255,255,.10);
-      --brand:#7c3aed;
-      --brand2:#4f46e5;
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
-      --radius:18px;
+      --line2:rgba(255,255,255,.14);
+      --accent:#7c5cff;
+      --accent2:#22c55e;
+      --danger:#ef4444;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family:var(--sans);
+      color:var(--text);
       background:
-        radial-gradient(1200px 800px at 10% 10%, rgba(124,58,237,.28), transparent 60%),
-        radial-gradient(900px 700px at 90% 20%, rgba(79,70,229,.22), transparent 55%),
-        radial-gradient(900px 700px at 55% 95%, rgba(34,197,94,.12), transparent 55%),
+        radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.15), transparent 55%),
+        radial-gradient(900px 700px at 90% 30%, rgba(34,197,94,.09), transparent 55%),
+        radial-gradient(900px 900px at 50% 100%, rgba(124,92,255,.08), transparent 55%),
         var(--bg);
-      color:var(--text);
     }
-    .wrap{max-width:1100px; margin:0 auto; padding:28px 18px 60px}
-    .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px;}
-    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;}
+    a{color:inherit}
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 18px 26px;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      user-select:none;
+    }
     .logo{
-      width:38px; height:38px; border-radius:12px;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      box-shadow: 0 10px 30px rgba(124,58,237,.35);
-      position:relative;
-      display:grid; place-items:center;
-      overflow:hidden;
+      width:40px;height:40px;
+      border-radius:14px;
+      background:
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.28), transparent 55%),
+        linear-gradient(135deg, rgba(124,92,255,1), rgba(34,197,94,1));
+      box-shadow: 0 12px 32px rgba(124,92,255,.25);
+      border:1px solid rgba(255,255,255,.18);
     }
-    .logo:after{content:""; position:absolute; inset:10px 11px; border-radius:10px; border:2px solid rgba(255,255,255,.35);}
-    .logo svg{width:20px; height:20px; z-index:2; filter: drop-shadow(0 10px 18px rgba(0,0,0,.28));}
-
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      line-height:1.15;
+    }
+    .brand small{
+      display:block;
+      margin-top:3px;
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.02em;
+      text-transform:none;
+    }
+    .topRight{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
     .pill{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:10px 12px; border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      border-radius:999px; color:var(--muted); font-size:13px;
-    }
-    .btn{
-      border:0; cursor:pointer; font-weight:700;
-      padding:12px 14px; border-radius:14px;
-      background: rgba(255,255,255,.06);
-      color:var(--text);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,255,255,.04);
       border:1px solid var(--line);
-      transition:.18s;
+      padding:10px 12px;
+      border-radius:999px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
     }
-    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.09)}
+    .pill b{font-size:12px}
+    .pill span{font-size:12px;color:var(--muted)}
+    .btn{
+      border:1px solid var(--line2);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      transition: transform .05s ease, border-color .2s ease, background .2s ease;
+      font-weight:600;
+      font-size:12px;
+    }
+    .btn:hover{border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.06)}
+    .btn:active{transform: translateY(1px)}
     .btn.primary{
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      border:0;
-      box-shadow: 0 14px 40px rgba(124,58,237,.28);
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(124,92,255,.65));
+      border-color:rgba(124,92,255,.75);
+      box-shadow: 0 12px 28px rgba(124,92,255,.22);
     }
-    .btn.primary:hover{filter:brightness(1.05)}
-    .hero{display:grid; grid-template-columns: 1.2fr .8fr; gap:18px; align-items:stretch; margin-top:10px;}
-    @media (max-width: 920px){ .hero{grid-template-columns:1fr} }
+    .btn.danger{
+      border-color:rgba(239,68,68,.45);
+      background:rgba(239,68,68,.10);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:16px;
+    }
+    @media(min-width: 960px){
+      .grid{grid-template-columns: 1fr 1fr 1fr;}
+    }
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
       border:1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
+      position:relative;
     }
-    .hd{padding:18px 18px 0;}
-    h1{margin:8px 0 10px; font-size:44px; line-height:1.02; letter-spacing:-.8px;}
-    @media (max-width: 520px){ h1{font-size:36px} }
-    .sub{color:var(--muted); font-size:15px; line-height:1.55; margin:0 0 18px; max-width:65ch;}
-    .tabs{display:flex; gap:8px; flex-wrap:wrap; padding:0 18px 18px;}
-    .tab{
-      padding:10px 12px; border-radius:999px; border:1px solid var(--line);
-      background: rgba(255,255,255,.04); color:var(--muted);
-      font-weight:700; font-size:13px; cursor:pointer; transition:.18s;
-      display:flex; align-items:center; gap:8px;
+    .cardHeader{
+      padding:16px 16px 10px;
+      border-bottom:1px solid var(--line);
+      background: rgba(0,0,0,.10);
     }
-    .tab.active{color:var(--text); background: rgba(124,58,237,.18); border-color: rgba(124,58,237,.45);}
-    .tab:hover{transform: translateY(-1px)}
-    .tool{padding:18px; border-top:1px solid var(--line); background: rgba(0,0,0,.15);}
-    label{display:block; font-size:12px; color:var(--muted); margin:12px 0 8px}
-    textarea, input, select{
-      width:100%; padding:12px; border-radius:14px; border:1px solid var(--line);
-      background: rgba(0,0,0,.25); color:var(--text); outline:none; font-size:14px;
+    .cardHeader h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
     }
-    textarea{min-height:150px; resize:vertical}
+    .cardHeader p{
+      margin:7px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+    .cardBody{padding:14px 16px 16px;}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .field{margin-top:10px;}
+    .label{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:7px;
+    }
 
-    /* ✅ Better selects */
+    /* --- Select styling (keep “nice” look: arrow, focus, dark options) --- */
+    .selectWrap{
+      position:relative;
+      width:100%;
+    }
     select{
+      width:100%;
+      appearance:none;
       -webkit-appearance:none;
       -moz-appearance:none;
-      appearance:none;
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--line2);
+      color:var(--text);
+      padding:11px 40px 11px 12px;
+      border-radius: 14px;
+      outline:none;
+      font-weight:600;
+      font-size:12px;
       cursor:pointer;
-      padding-right:42px;
-      background-color: rgba(0,0,0,.25);
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='rgba(233,233,255,.85)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat:no-repeat;
-      background-position:right 14px center;
+      transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
     }
     select:focus{
-      border-color: rgba(124,58,237,.55);
-      box-shadow: 0 0 0 4px rgba(124,58,237,.15);
+      border-color: rgba(124,92,255,.75);
+      box-shadow: 0 0 0 4px rgba(124,92,255,.18);
+      background: rgba(255,255,255,.05);
     }
     select option{
-      background:#0f1020;
-      color:#e9e9ff;
+      background:#0b1020;
+      color:var(--text);
+    }
+    .selectWrap:after{
+      content:"";
+      position:absolute;
+      right:14px;
+      top:50%;
+      width:10px;height:10px;
+      transform: translateY(-50%) rotate(45deg);
+      border-right:2px solid rgba(255,255,255,.55);
+      border-bottom:2px solid rgba(255,255,255,.55);
+      pointer-events:none;
     }
 
-    .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-    @media (max-width: 620px){ .grid2{grid-template-columns:1fr} }
-    .actions{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:14px;}
-    .leftActions{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .mini{font-size:12px; color:var(--muted); padding:8px 10px; border:1px dashed rgba(255,255,255,.18); border-radius:12px; background: rgba(255,255,255,.03);}
-    .result{margin-top:14px; border-radius:14px; border:1px solid var(--line); background: rgba(0,0,0,.22); padding:12px; display:none;}
-    .result pre{margin:0; white-space:pre-wrap; word-wrap:break-word; font-family:Inter,system-ui,sans-serif; font-size:14px; line-height:1.6;}
-    .side{padding:18px; display:flex; flex-direction:column; gap:12px;}
-    .box{border:1px solid var(--line); border-radius: var(--radius); padding:14px; background: rgba(255,255,255,.04);}
-    .side h3{margin:0 0 8px; font-size:14px}
-    .side p{margin:0; color:var(--muted); font-size:13px; line-height:1.5}
-    .pricing{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
-    .priceCard{padding:14px; border-radius:16px; border:1px solid var(--line); background: rgba(0,0,0,.20);}
-    .priceCard strong{display:block; font-size:14px; margin-bottom:4px}
-    .priceCard span{color:var(--muted); font-size:12px}
-    .paywall{margin-top:14px; border-radius:16px; border:1px solid rgba(245,158,11,.28); background: rgba(245,158,11,.08); padding:14px; display:none;}
-    .paywall h4{margin:0 0 6px}
-    .paywall p{margin:0 0 10px; color:var(--muted); font-size:13px; line-height:1.5}
-    .payButtons{display:flex; gap:10px; flex-wrap:wrap}
-    .btn.ghost{background: rgba(255,255,255,.04)}
-    .footer{margin-top:22px; color:rgba(255,255,255,.45); font-size:12px; text-align:center;}
-    .spinner{width:16px; height:16px; border-radius:999px; border:2px solid rgba(255,255,255,.25); border-top-color: rgba(255,255,255,.9); display:inline-block; animation: spin .8s linear infinite; vertical-align:middle;}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .toast{position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background: rgba(0,0,0,.7); border:1px solid var(--line); color:var(--text); padding:10px 12px; border-radius:999px; font-size:13px; display:none; z-index:50;}
-
-    /* Footer */
-    .siteFooter{
-      margin-top:26px;
-      padding:22px 0 10px;
-      border-top:1px solid rgba(255,255,255,.10);
-      color:rgba(233,233,255,.70);
-    }
-    .footerGrid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr .8fr;
-      gap:14px;
-      align-items:start;
-    }
-    @media (max-width: 900px){
-      .footerGrid{ grid-template-columns:1fr; }
-    }
-    .footerCol h4{
-      margin:0 0 8px;
+    textarea{
+      width:100%;
+      min-height:120px;
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--line2);
+      color:var(--text);
+      padding:12px;
+      border-radius: 14px;
+      outline:none;
+      resize:vertical;
+      line-height:1.45;
       font-size:13px;
-      color:rgba(233,233,255,.9);
+    }
+    textarea:focus{
+      border-color: rgba(124,92,255,.75);
+      box-shadow: 0 0 0 4px rgba(124,92,255,.18);
+    }
+    .out{
+      margin-top:10px;
+      background: rgba(0,0,0,.22);
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding:12px;
+      font-family: var(--mono);
+      font-size:12px;
+      line-height:1.5;
+      white-space:pre-wrap;
+      min-height:88px;
+    }
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .paywall{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background: rgba(0,0,0,.70);
+      backdrop-filter: blur(10px);
+      z-index:9999;
+    }
+    .paywallCard{
+      width:min(560px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.7);
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .paywallCard:before{
+      content:"";
+      position:absolute;
+      inset:-120px -120px auto auto;
+      width:240px;height:240px;
+      background: radial-gradient(circle at 30% 30%, rgba(124,92,255,.35), transparent 60%);
+      transform: rotate(20deg);
+      pointer-events:none;
+    }
+    .paywallCard h3{
+      margin:0 0 6px;
+      font-size:16px;
+      letter-spacing:.02em;
+    }
+    .paywallCard p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .paywallRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:10px;
+      line-height:1.5;
+    }
+
+    footer{
+      margin-top:18px;
+      padding:16px 0 6px;
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .footerLeft{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
     }
     .footerLinks{
       display:flex;
-      flex-direction:column;
-      gap:8px;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      font-size:12px;
     }
     .footerLinks a{
-      color:rgba(233,233,255,.70);
-      font-size:13px;
+      color:var(--muted);
       text-decoration:none;
       border-bottom:1px dashed rgba(255,255,255,.18);
-      width:fit-content;
     }
-    .footerLinks a:hover{
-      color:rgba(233,233,255,.95);
-      border-bottom-color: rgba(124,58,237,.55);
-    }
-    .footerBottom{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:14px;
-      font-size:12px;
-      color:rgba(233,233,255,.55);
-    }
-    .langSelect{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .langSelect select{
-      width:auto;
-      padding:8px 36px 8px 10px;
-      border-radius:12px;
-      font-size:12px;
-      background-color: rgba(0,0,0,.22);
-    }
+    .footerLinks a:hover{color:var(--text)}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="topbar">
+    <header>
       <div class="brand">
-        <div class="logo" aria-label="VIREX logo">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M8 16.5l2.6-.9L19 7.2c.8-.8.8-2.1 0-2.9l-.3-.3c-.8-.8-2.1-.8-2.9 0L7.4 12.4 6.9 19l1.1-2.5z" fill="rgba(255,255,255,.92)"/>
-            <path d="M14.4 5.4l4.2 4.2" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>VIREX</h1>
+          <small id="tagline">AI Writing Toolkit</small>
         </div>
-        <span>VIREX</span>
-        <span class="pill">✨ 3 tools • 2 free generations</span>
-      </div>
-      <div style="display:flex; gap:10px; align-items:center;">
-        <button class="btn" id="resetBtn">Reset free counter</button>
-        <button class="btn primary" id="pricingBtn">Pricing</button>
-      </div>
-    </div>
-
-    <div class="hero">
-      <div class="card">
-        <div class="hd">
-          <div class="pill">Fast • Clean • Human-quality writing</div>
-          <h1>Write better in seconds.</h1>
-          <p class="sub">
-            Humanize text, generate a tailored cover letter, or create social posts that don’t sound like a bot.
-            Start free — no account needed.
-          </p>
-        </div>
-
-        <div class="tabs">
-          <button class="tab active" data-tool="humanize">🧠 Humanize</button>
-          <button class="tab" data-tool="coverletter">💼 Cover Letter</button>
-          <button class="tab" data-tool="social">📣 Social Post</button>
-        </div>
-
-        <div class="tool" id="toolArea"></div>
       </div>
 
-      <div class="card">
-        <div class="side">
-          <div class="box">
-            <h3>Free limit</h3>
-            <p id="freeInfo">You have 2 free generations available.</p>
-          </div>
+      <div class="topRight">
+        <div class="pill">
+          <b id="freeLabel">Free left</b>
+          <span><span id="freeLeft">2</span>/2</span>
+        </div>
+        <button class="btn danger" id="resetFreeBtn" type="button">Reset free counter</button>
+      </div>
+    </header>
 
-          <div class="box">
-            <h3>What you get</h3>
-            <p>✅ Natural rewriting</p>
-            <p>✅ Multi-language output</p>
-            <p>✅ Copy & save results</p>
-          </div>
+    <div class="grid">
 
-          <div class="box">
-            <h3>Pricing (next step)</h3>
-            <p style="margin-top:8px; color:var(--muted); font-size:13px;">
-              We’ll connect payments after the MVP is stable.
-            </p>
-            <div class="pricing">
-              <div class="priceCard">
-                <strong>3 generations — $2</strong>
-                <span>Pay as you go</span>
-              </div>
-              <div class="priceCard">
-                <strong>10 generations — $5</strong>
-                <span>Best value</span>
-              </div>
+      <!-- Humanize -->
+      <section class="card">
+        <div class="cardHeader">
+          <h2 id="hTitle">Humanize</h2>
+          <p id="hDesc">Make AI-like text feel more natural and human.</p>
+        </div>
+        <div class="cardBody">
+          <div class="field">
+            <div class="label">
+              <span id="hToneLabel">Tone</span>
+            </div>
+            <div class="selectWrap">
+              <select id="hTone">
+                <option value="neutral">Neutral</option>
+                <option value="friendly">Friendly</option>
+                <option value="formal">Formal</option>
+                <option value="confident">Confident</option>
+              </select>
             </div>
           </div>
 
-          <div class="paywall" id="paywall">
-            <h4>Free limit reached</h4>
-            <p>
-              You’ve used your 2 free generations on this device.
-              Next step: payments + accounts to unlock more.
-            </p>
-            <div class="payButtons">
-              <button class="btn primary" id="buyBtn">Unlock more (soon)</button>
-              <button class="btn ghost" id="learnBtn">How it works</button>
+          <div class="field">
+            <div class="label">
+              <span id="hInputLabel">Input</span>
+            </div>
+            <textarea id="hInput" placeholder="Paste your text here..."></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="hGen" type="button">Generate</button>
+            <button class="btn" id="hCopy" type="button">Copy</button>
+            <button class="btn" id="hSave" type="button">Save .txt</button>
+          </div>
+
+          <div class="out" id="hOut"></div>
+          <div class="hint" id="hHint">Tip: keep the main idea, but vary sentence structure and add natural transitions.</div>
+        </div>
+      </section>
+
+      <!-- Cover Letter -->
+      <section class="card">
+        <div class="cardHeader">
+          <h2 id="cTitle">Cover Letter</h2>
+          <p id="cDesc">Generate a tailored cover letter from a short brief.</p>
+        </div>
+        <div class="cardBody">
+          <div class="field">
+            <div class="label">
+              <span id="cStyleLabel">Style</span>
+            </div>
+            <div class="selectWrap">
+              <select id="cStyle">
+                <option value="concise">Concise</option>
+                <option value="standard">Standard</option>
+                <option value="detailed">Detailed</option>
+              </select>
             </div>
           </div>
 
-          <div class="footer">© <span id="yr"></span> VIREX</div>
+          <div class="field">
+            <div class="label">
+              <span id="cInputLabel">Brief</span>
+            </div>
+            <textarea id="cInput" placeholder="Role, company, experience, key achievements, skills, tone..."></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="cGen" type="button">Generate</button>
+            <button class="btn" id="cCopy" type="button">Copy</button>
+            <button class="btn" id="cSave" type="button">Save .txt</button>
+          </div>
+
+          <div class="out" id="cOut"></div>
+          <div class="hint" id="cHint">Tip: include 2–3 achievements with numbers (%, $, time saved, users, etc.).</div>
         </div>
-      </div>
+      </section>
+
+      <!-- Social Post -->
+      <section class="card">
+        <div class="cardHeader">
+          <h2 id="sTitle">Social Post</h2>
+          <p id="sDesc">Write a clean post for Twitter/X, LinkedIn, or Instagram.</p>
+        </div>
+        <div class="cardBody">
+          <div class="field">
+            <div class="label">
+              <span id="sPlatformLabel">Platform</span>
+            </div>
+            <div class="selectWrap">
+              <select id="sPlatform">
+                <option value="linkedin">LinkedIn</option>
+                <option value="x">Twitter / X</option>
+                <option value="instagram">Instagram</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="label">
+              <span id="sInputLabel">Topic</span>
+            </div>
+            <textarea id="sInput" placeholder="What do you want to post about? Add key points, CTA, hashtags..."></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="sGen" type="button">Generate</button>
+            <button class="btn" id="sCopy" type="button">Copy</button>
+            <button class="btn" id="sSave" type="button">Save .txt</button>
+          </div>
+
+          <div class="out" id="sOut"></div>
+          <div class="hint" id="sHint">Tip: one strong hook + 3 bullets + CTA works best on most platforms.</div>
+        </div>
+      </section>
+
     </div>
 
-    <footer class="siteFooter">
-      <div class="footerGrid">
-        <div class="footerCol">
-          <h4 id="ftBrandTitle">VIREX</h4>
-          <div id="ftBrandDesc" style="font-size:13px; line-height:1.6; color:rgba(233,233,255,.65); max-width:52ch;">
-            Humanize text, generate cover letters, and create social posts that sound natural.
-          </div>
-        </div>
-
-        <div class="footerCol">
-          <h4 id="ftProduct">Product</h4>
-          <div class="footerLinks">
-            <a href="#" onclick="document.querySelector('[data-tool=humanize]').click(); return false;" id="ftHumanize">Humanize</a>
-            <a href="#" onclick="document.querySelector('[data-tool=coverletter]').click(); return false;" id="ftCover">Cover Letter</a>
-            <a href="#" onclick="document.querySelector('[data-tool=social]').click(); return false;" id="ftSocial">Social Post</a>
-          </div>
-        </div>
-
-        <div class="footerCol">
-          <h4 id="ftLegal">Legal</h4>
-          <div class="footerLinks">
-            <a href="/privacy.html" id="ftPrivacy">Privacy Policy</a>
-            <a href="/terms.html" id="ftTerms">Terms of Service</a>
-            <a href="#" onclick="showSupport(); return false;" id="ftSupport">Support</a>
-          </div>
-        </div>
+    <footer>
+      <div class="footerLeft">
+        <div>© <span id="year"></span> <b>VIREX</b>. <span id="rights">All rights reserved.</span></div>
       </div>
 
-      <div class="footerBottom">
-        <div id="ftCopyright">© <span id="yr2"></span> VIREX. All rights reserved.</div>
+      <div class="footerLinks">
+        <a href="/privacy.html" id="privacyLink">Privacy Policy</a>
+        <a href="/terms.html" id="termsLink">Terms of Service</a>
 
-        <div class="langSelect">
-          <span id="ftLangLabel">Language:</span>
-          <select id="lang">
+        <div class="selectWrap" style="width:160px;">
+          <select id="langSelect" aria-label="Language">
             <option value="en">English</option>
             <option value="ru">Русский</option>
-            <option value="es">Español</option>
-            <option value="de">Deutsch</option>
-            <option value="fr">Français</option>
           </select>
         </div>
       </div>
     </footer>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <!-- Paywall -->
+  <div class="paywall" id="paywall">
+    <div class="paywallCard" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+      <h3 id="pwTitle">Upgrade to continue</h3>
+      <p id="pwText">
+        You’ve used your <b>2 free generations</b>. Upgrade to unlock unlimited generations and future features.
+      </p>
+
+      <div class="paywallRow">
+        <button class="btn primary" id="pwUpgrade" type="button">Upgrade</button>
+        <button class="btn" id="pwClose" type="button">Close</button>
+      </div>
+
+      <div class="small" id="pwSmall">
+        Note: Payments/subscriptions will be added next (email + Google login, promo codes, subscriptions).
+      </div>
+    </div>
+  </div>
 
   <script>
-    const FREE_LIMIT = 2;
-    const LS_KEY = "ti_free_used_v1";
-    const LANG_KEY = "ti_lang_v1";
-    const state = { tool: "humanize", loading: false };
-
-    const i18n = {
+    // -----------------------------
+    // VIREX — UI i18n (UI only)
+    // -----------------------------
+    const I18N = {
       en: {
-        langLabel: "Language:",
-        product: "Product",
-        legal: "Legal",
-        support: "Support",
-        brandDesc: "Humanize text, generate cover letters, and create social posts that sound natural.",
-        supportMsg: "Support: we’ll add an email soon.",
+        tagline: "AI Writing Toolkit",
+        freeLabel: "Free left",
+        resetFree: "Reset free counter",
+
+        hTitle: "Humanize",
+        hDesc: "Make AI-like text feel more natural and human.",
+        hToneLabel: "Tone",
+        hInputLabel: "Input",
+        hGen: "Generate",
+        hCopy: "Copy",
+        hSave: "Save .txt",
+        hHint: "Tip: keep the main idea, but vary sentence structure and add natural transitions.",
+
+        cTitle: "Cover Letter",
+        cDesc: "Generate a tailored cover letter from a short brief.",
+        cStyleLabel: "Style",
+        cInputLabel: "Brief",
+        cGen: "Generate",
+        cCopy: "Copy",
+        cSave: "Save .txt",
+        cHint: "Tip: include 2–3 achievements with numbers (%, $, time saved, users, etc.).",
+
+        sTitle: "Social Post",
+        sDesc: "Write a clean post for Twitter/X, LinkedIn, or Instagram.",
+        sPlatformLabel: "Platform",
+        sInputLabel: "Topic",
+        sGen: "Generate",
+        sCopy: "Copy",
+        sSave: "Save .txt",
+        sHint: "Tip: one strong hook + 3 bullets + CTA works best on most platforms.",
+
+        rights: "All rights reserved.",
         privacy: "Privacy Policy",
         terms: "Terms of Service",
-        copyright: (y)=>`© ${y} VIREX. All rights reserved.`
+
+        pwTitle: "Upgrade to continue",
+        pwText: "You’ve used your 2 free generations. Upgrade to unlock unlimited generations and future features.",
+        pwUpgrade: "Upgrade",
+        pwClose: "Close",
+        pwSmall: "Note: Payments/subscriptions will be added next (email + Google login, promo codes, subscriptions)."
       },
+
       ru: {
-        langLabel: "Язык:",
-        product: "Продукт",
-        legal: "Юридическое",
-        support: "Поддержка",
-        brandDesc: "Очеловечивайте текст, генерируйте сопроводительные письма и делайте посты для соцсетей.",
-        supportMsg: "Поддержка: скоро добавим email.",
+        tagline: "AI инструменты для текста",
+        freeLabel: "Бесплатно осталось",
+        resetFree: "Сбросить счётчик",
+
+        hTitle: "Humanize",
+        hDesc: "Сделайте текст более естественным и «человечным».",
+        hToneLabel: "Тон",
+        hInputLabel: "Ввод",
+        hGen: "Сгенерировать",
+        hCopy: "Копировать",
+        hSave: "Скачать .txt",
+        hHint: "Совет: сохраните смысл, но меняйте структуру предложений и добавляйте естественные связки.",
+
+        cTitle: "Cover Letter",
+        cDesc: "Сгенерируйте сопроводительное письмо по короткому описанию.",
+        cStyleLabel: "Стиль",
+        cInputLabel: "Описание",
+        cGen: "Сгенерировать",
+        cCopy: "Копировать",
+        cSave: "Скачать .txt",
+        cHint: "Совет: добавьте 2–3 достижения с цифрами (%, $, время, пользователи и т.д.).",
+
+        sTitle: "Social Post",
+        sDesc: "Пост для LinkedIn, Twitter/X или Instagram.",
+        sPlatformLabel: "Платформа",
+        sInputLabel: "Тема",
+        sGen: "Сгенерировать",
+        sCopy: "Копировать",
+        sSave: "Скачать .txt",
+        sHint: "Совет: сильный хук + 3 пункта + CTA обычно работают лучше всего.",
+
+        rights: "Все права защищены.",
         privacy: "Политика конфиденциальности",
         terms: "Условия использования",
-        copyright: (y)=>`© ${y} VIREX. Все права защищены.`
-      },
-      es: {
-        langLabel: "Idioma:",
-        product: "Producto",
-        legal: "Legal",
-        support: "Soporte",
-        brandDesc: "Humaniza texto, crea cartas de presentación y posts para redes sociales.",
-        supportMsg: "Soporte: pronto añadiremos un correo.",
-        privacy: "Política de privacidad",
-        terms: "Términos de servicio",
-        copyright: (y)=>`© ${y} VIREX. Todos los derechos reservados.`
-      },
-      de: {
-        langLabel: "Sprache:",
-        product: "Produkt",
-        legal: "Rechtliches",
-        support: "Support",
-        brandDesc: "Mache Texte menschlicher, erstelle Anschreiben und Social Posts.",
-        supportMsg: "Support: E-Mail folgt in Kürze.",
-        privacy: "Datenschutz",
-        terms: "Nutzungsbedingungen",
-        copyright: (y)=>`© ${y} VIREX. Alle Rechte vorbehalten.`
-      },
-      fr: {
-        langLabel: "Langue :",
-        product: "Produit",
-        legal: "Mentions",
-        support: "Support",
-        brandDesc: "Humanisez le texte, générez des lettres et créez des posts sociaux.",
-        supportMsg: "Support : un e-mail sera ajouté bientôt.",
-        privacy: "Politique de confidentialité",
-        terms: "Conditions d’utilisation",
-        copyright: (y)=>`© ${y} VIREX. Tous droits réservés.`
+
+        pwTitle: "Нужен апгрейд",
+        pwText: "Вы использовали 2 бесплатные генерации. Оформите доступ, чтобы снять лимиты и открыть будущие функции.",
+        pwUpgrade: "Апгрейд",
+        pwClose: "Закрыть",
+        pwSmall: "Примечание: оплата/подписки будут добавлены следующими (логин email + Google, промокоды, подписки)."
       }
     };
 
-    function getUsed(){ return Number(localStorage.getItem(LS_KEY) || 0); }
-    function setUsed(v){ localStorage.setItem(LS_KEY, String(v)); renderFreeInfo(); }
-    function freeLeft(){ return Math.max(0, FREE_LIMIT - getUsed()); }
+    // -----------------------------
+    // Free counter + paywall
+    // -----------------------------
+    const MAX_FREE = 2;
+    const LS_FREE = "virex_free_left";
+    const LS_LANG = "virex_lang";
 
-    function toast(msg){
-      const t = document.getElementById("toast");
-      t.textContent = msg; t.style.display = "block";
-      setTimeout(()=> t.style.display = "none", 1800);
+    const $ = (id) => document.getElementById(id);
+
+    function getFreeLeft(){
+      const raw = localStorage.getItem(LS_FREE);
+      const n = raw === null ? MAX_FREE : parseInt(raw, 10);
+      return Number.isFinite(n) ? Math.max(0, n) : MAX_FREE;
+    }
+    function setFreeLeft(n){
+      localStorage.setItem(LS_FREE, String(Math.max(0, n)));
+      $("freeLeft").textContent = String(getFreeLeft());
     }
 
-    function renderFreeInfo(){
-      const left = freeLeft();
-      document.getElementById("freeInfo").textContent =
-        left > 0 ? `You have ${left} free generation${left===1?"":"s"} available.` : `Free limit reached.`;
-      document.getElementById("paywall").style.display = left === 0 ? "block" : "none";
+    function showPaywall(){
+      $("paywall").style.display = "flex";
+    }
+    function hidePaywall(){
+      $("paywall").style.display = "none";
     }
 
-    function toolHumanize(){
-      return `
-        <label>Text to humanize</label>
-        <textarea id="inputText" placeholder="Paste AI text or any text..."></textarea>
-
-        <div class="grid2">
-          <div>
-            <label>Tone</label>
-            <select id="tone">
-              <option>Neutral</option><option>Professional</option><option>Friendly</option><option>Confident</option><option>Creative</option>
-            </select>
-          </div>
-          <div>
-            <label>Language</label>
-            <select id="language">
-              <option>Auto</option><option>English</option><option>Russian</option><option>Spanish</option><option>German</option><option>French</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="actions">
-          <div class="leftActions">
-            <button class="btn primary" id="goBtn" data-label="✨ Humanize">✨ Humanize</button>
-            <span class="mini">Keeps meaning • improves flow</span>
-          </div>
-          <div class="leftActions">
-            <button class="btn" id="copyBtn">Copy</button>
-            <button class="btn" id="saveBtn">Save .txt</button>
-          </div>
-        </div>
-
-        <div class="result" id="resultBox"><pre id="resultText"></pre></div>
-      `;
+    function consumeFreeOrPaywall(){
+      const left = getFreeLeft();
+      if(left <= 0){
+        showPaywall();
+        return false;
+      }
+      setFreeLeft(left - 1);
+      return true;
     }
 
-    function toolCoverLetter(){
-      return `
-        <label>Job title</label>
-        <input id="jobTitle" placeholder="e.g., Junior Frontend Developer" />
+    // -----------------------------
+    // Copy / Save
+    // -----------------------------
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+    }
 
-        <label>Company (optional)</label>
-        <input id="company" placeholder="e.g., Acme Inc." />
+    function saveTxt(filename, content){
+      const blob = new Blob([content], {type:"text/plain;charset=utf-8"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }
 
-        <label>Your experience / strengths (bullet
+    // -----------------------------
+    // Simple placeholder generators (front-only demo)
+    // (You can later replace with real API calls)
+    // -----------------------------
+    function genHumanize(input, tone){
+      if(!input.trim()) return "";
+      const prefix = tone === "formal" ? "Refined version:\n"
+                  : tone === "friendly" ? "Friendly version:\n"
+                  : tone === "confident" ? "Confident version:\n"
+                  : "Humanized version:\n";
+      return prefix + input.trim();
+    }
+
+    function genCoverLetter(brief, style){
+      if(!brief.trim()) return "";
+      const head = style === "concise" ? "Cover Letter (Concise)\n"
+                 : style === "detailed" ? "Cover Letter (Detailed)\n"
+                 : "Cover Letter\n";
+      return head + "—\n" + brief.trim();
+    }
+
+    function genSocial(topic, platform){
+      if(!topic.trim()) return "";
+      const head = platform === "linkedin" ? "LinkedIn Post\n"
+                 : platform === "instagram" ? "Instagram Caption\n"
+                 : "Twitter/X Post\n";
+      return head + "—\n" + topic.trim();
+    }
+
+    // -----------------------------
+    // i18n apply
+    // -----------------------------
+    function applyLang(lang){
+      const t = I18N[lang] || I18N.en;
+
+      $("tagline").textContent = t.tagline;
+      $("freeLabel").textContent = t.freeLabel;
+      $("resetFreeBtn").textContent = t.resetFree;
+
+      $("hTitle").textContent = t.hTitle;
+      $("hDesc").textContent = t.hDesc;
+      $("hToneLabel").textContent = t.hToneLabel;
+      $("hInputLabel").textContent = t.hInputLabel;
+      $("hGen").textContent = t.hGen;
+      $("hCopy").textContent = t.hCopy;
+      $("hSave").textContent = t.hSave;
+      $("hHint").textContent = t.hHint;
+
+      $("cTitle").textContent = t.cTitle;
+      $("cDesc").textContent = t.cDesc;
+      $("cStyleLabel").textContent = t.cStyleLabel;
+      $("cInputLabel").textContent = t.cInputLabel;
+      $("cGen").textContent = t.cGen;
+      $("cCopy").textContent = t.cCopy;
+      $("cSave").textContent = t.cSave;
+      $("cHint").textContent = t.cHint;
+
+      $("sTitle").textContent = t.sTitle;
+      $("sDesc").textContent = t.sDesc;
+      $("sPlatformLabel").textContent = t.sPlatformLabel;
+      $("sInputLabel").textContent = t.sInputLabel;
+      $("sGen").textContent = t.sGen;
+      $("sCopy").textContent = t.sCopy;
+      $("sSave").textContent = t.sSave;
+      $("sHint").textContent = t.sHint;
+
+      $("rights").textContent = t.rights;
+      $("privacyLink").textContent = t.privacy;
+      $("termsLink").textContent = t.terms;
+
+      $("pwTitle").textContent = t.pwTitle;
+      $("pwText").textContent = t.pwText;
+      $("pwUpgrade").textContent = t.pwUpgrade;
+      $("pwClose").textContent = t.pwClose;
+      $("pwSmall").textContent = t.pwSmall;
+
+      localStorage.setItem(LS_LANG, lang);
+    }
+
+    // -----------------------------
+    // Init
+    // -----------------------------
+    (function init(){
+      $("year").textContent = String(new Date().getFullYear());
+
+      // Free counter init
+      $("freeLeft").textContent = String(getFreeLeft());
+
+      // Language init
+      const savedLang = localStorage.getItem(LS_LANG) || "en";
+      $("langSelect").value = savedLang;
+      applyLang(savedLang);
+
+      $("langSelect").addEventListener("change", (e)=> applyLang(e.target.value));
+
+      $("resetFreeBtn").addEventListener("click", ()=>{
+        setFreeLeft(MAX_FREE);
+        hidePaywall();
+      });
+
+      $("pwClose").addEventListener("click", hidePaywall);
+      $("paywall").addEventListener("click", (e)=>{
+        if(e.target === $("paywall")) hidePaywall();
+      });
+      $("pwUpgrade").addEventListener("click", ()=>{
+        // Placeholder (future payments/subscriptions)
+        alert("Upgrade flow will be added next.");
+      });
+
+      // Humanize
+      $("hGen").addEventListener("click", ()=>{
+        if(!consumeFreeOrPaywall()) return;
+        $("hOut").textContent = genHumanize($("hInput").value, $("hTone").value);
+      });
+      $("hCopy").addEventListener("click", ()=> copyText($("hOut").textContent || ""));
+      $("hSave").addEventListener("click", ()=> saveTxt("virex-humanize.txt", $("hOut").textContent || ""));
+
+      // Cover letter
+      $("cGen").addEventListener("click", ()=>{
+        if(!consumeFreeOrPaywall()) return;
+        $("cOut").textContent = genCoverLetter($("cInput").value, $("cStyle").value);
+      });
+      $("cCopy").addEventListener("click", ()=> copyText($("cOut").textContent || ""));
+      $("cSave").addEventListener("click", ()=> saveTxt("virex-cover-letter.txt", $("cOut").textContent || ""));
+
+      // Social post
+      $("sGen").addEventListener("click", ()=>{
+        if(!consumeFreeOrPaywall()) return;
+        $("sOut").textContent = genSocial($("sInput").value, $("sPlatform").value);
+      });
+      $("sCopy").addEventListener("click", ()=> copyText($("sOut").textContent || ""));
+      $("sSave").addEventListener("click", ()=> saveTxt("virex-social-post.txt", $("sOut").textContent || ""));
+    })();
+  </script>
+</body>
+</html>
