@@ -18,7 +18,6 @@
       --line:rgba(255,255,255,.10);
       --line2:rgba(255,255,255,.14);
       --accent:#7c5cff;
-      --accent2:#22c55e;
       --danger:#ef4444;
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --radius: 18px;
@@ -39,7 +38,7 @@
     }
     a{color:inherit}
     .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 26px;}
-    header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;}
+    header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px; position:relative; z-index:5;}
     .brand{display:flex;align-items:center;gap:12px;user-select:none;}
     .logo{
       width:40px;height:40px;border-radius:14px;
@@ -52,7 +51,7 @@
     .brand h1{margin:0;font-size:18px;letter-spacing:.18em;text-transform:uppercase;line-height:1.15;}
     .brand small{display:block;margin-top:3px;font-size:12px;color:var(--muted);letter-spacing:.02em;}
 
-    .topRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+    .topRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end; position:relative; z-index:5;}
     .pill{
       display:flex;align-items:center;gap:10px;
       background:rgba(255,255,255,.04);
@@ -188,13 +187,6 @@
       box-shadow: 0 30px 90px rgba(0,0,0,.7);
       padding:18px;position:relative;overflow:hidden;
     }
-    .paywallCard:before{
-      content:"";position:absolute;inset:-120px -120px auto auto;
-      width:240px;height:240px;
-      background: radial-gradient(circle at 30% 30%, rgba(124,92,255,.35), transparent 60%);
-      transform: rotate(20deg);
-      pointer-events:none;
-    }
     .paywallCard h3{margin:0 0 6px;font-size:16px;letter-spacing:.02em;}
     .paywallCard p{margin:0;color:var(--muted);font-size:13px;line-height:1.55;}
     .paywallRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
@@ -280,7 +272,6 @@
     </header>
 
     <div class="grid">
-      <!-- Humanize -->
       <section class="card">
         <div class="cardHeader">
           <h2>Humanize</h2>
@@ -315,7 +306,6 @@
         </div>
       </section>
 
-      <!-- Cover Letter -->
       <section class="card">
         <div class="cardHeader">
           <h2>Cover Letter</h2>
@@ -349,7 +339,6 @@
         </div>
       </section>
 
-      <!-- Social Post -->
       <section class="card">
         <div class="cardHeader">
           <h2>Social Post</h2>
@@ -399,6 +388,9 @@
             <option value="ru">Русский</option>
           </select>
         </div>
+
+        <!-- Debug / test helper: reset cookie key -->
+        <button class="btn" id="resetCookie" type="button" title="Show cookie banner again">Reset cookie</button>
       </div>
     </footer>
   </div>
@@ -462,9 +454,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+    // -----------------------------
     // Supabase (YOUR REAL KEYS)
+    // -----------------------------
     const SUPABASE_URL = "https://yrcgqbgomzqtrssdyewd.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Uw04cxElgXksa7K-bUr4SA_sa85Z44C";
+
+    // NEVER redeclare "supabase" elsewhere in this file.
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const I18N = {
       en: {
@@ -495,31 +492,44 @@
 
     const LS_LANG = "virex_lang";
     const LS_COOKIE = "virex_cookie_consent";
+
     const $ = (id) => document.getElementById(id);
-    function show(el){ el.style.display = "flex"; }
-    function hide(el){ el.style.display = "none"; }
+    const on = (id, evt, fn) => { const el = $(id); if(el) el.addEventListener(evt, fn); };
 
     function setStatus(text, kind){
       const el = $("authStatus");
+      if(!el) return;
       el.textContent = text || "";
       el.className = "status" + (kind ? " " + kind : "");
     }
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Cookie
+    function getCookieConsent(){ return localStorage.getItem(LS_COOKIE); }
+    function showCookieBar(){ const b = $("cookieBar"); if(b) b.style.display = "block"; }
+    function hideCookieBar(){ const b = $("cookieBar"); if(b) b.style.display = "none"; }
+    function setCookieConsent(value){ localStorage.setItem(LS_COOKIE, value); hideCookieBar(); }
 
-    // Profiles helpers (free attempts per account)
+    // Paywall
+    function showPaywall(){ const p = $("paywall"); if(p) p.style.display = "flex"; }
+    function hidePaywall(){ const p = $("paywall"); if(p) p.style.display = "none"; }
+
+    // Auth modal
+    function openAuth(){ setStatus("", ""); const m = $("authModal"); if(m) m.style.display = "flex"; }
+    function closeAuth(){ const m = $("authModal"); if(m) m.style.display = "none"; }
+
+    // Profiles (free attempts per account)
     async function ensureProfile(user){
       if(!user) return null;
       const email = user.email || null;
 
-      let { data, error } = await supabase
+      let { data, error } = await sb
         .from("profiles")
         .select("id,email,free_left")
         .eq("id", user.id)
         .maybeSingle();
 
       if(!data){
-        const ins = await supabase.from("profiles").insert({
+        const ins = await sb.from("profiles").insert({
           id: user.id,
           email: email,
           free_left: 2
@@ -529,7 +539,7 @@
       }
 
       if(data && !data.email && email){
-        await supabase.from("profiles").update({ email: email }).eq("id", user.id);
+        await sb.from("profiles").update({ email: email }).eq("id", user.id);
         data.email = email;
       }
 
@@ -539,7 +549,7 @@
 
     async function getFreeLeft(user){
       if(!user) return null;
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from("profiles")
         .select("free_left")
         .eq("id", user.id)
@@ -550,7 +560,7 @@
 
     async function setFreeLeft(user, n){
       if(!user) return false;
-      const { error } = await supabase
+      const { error } = await sb
         .from("profiles")
         .update({ free_left: Math.max(0, n), updated_at: new Date().toISOString() })
         .eq("id", user.id);
@@ -558,14 +568,8 @@
       return true;
     }
 
-    function showPaywall(){ $("paywall").style.display = "flex"; }
-    function hidePaywall(){ $("paywall").style.display = "none"; }
-
-    function openAuth(){ setStatus("", ""); show($("authModal")); }
-    function closeAuth(){ hide($("authModal")); }
-
     async function requireAuthOrOpen(){
-      const { data } = await supabase.auth.getSession();
+      const { data } = await sb.auth.getSession();
       if(data.session?.user) return data.session.user;
       openAuth();
       return null;
@@ -586,6 +590,7 @@
       return true;
     }
 
+    // Copy / Save
     async function copyText(text){
       try{ await navigator.clipboard.writeText(text); }
       catch(e){
@@ -629,17 +634,11 @@
       return head + "—\n" + topic.trim();
     }
 
-    // Cookie
-    function getCookieConsent(){ return localStorage.getItem(LS_COOKIE); }
-    function showCookieBar(){ $("cookieBar").style.display = "block"; }
-    function hideCookieBar(){ $("cookieBar").style.display = "none"; }
-    function setCookieConsent(value){ localStorage.setItem(LS_COOKIE, value); hideCookieBar(); }
-
     async function sendMagicLink(email){
       setStatus("Sending magic link…", "");
       if(!email || !email.includes("@")){ setStatus("Enter a valid email.", "err"); return; }
 
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await sb.auth.signInWithOtp({
         email,
         options: { emailRedirectTo: window.location.origin + "/index.html" }
       });
@@ -649,101 +648,97 @@
     }
 
     async function signOut(){
-      await supabase.auth.signOut();
+      await sb.auth.signOut();
       await refreshTopBar();
     }
 
     async function refreshTopBar(){
-      const { data } = await supabase.auth.getSession();
+      const { data } = await sb.auth.getSession();
       const user = data.session?.user || null;
 
       const lang = localStorage.getItem(LS_LANG) || "en";
       const t = I18N[lang] || I18N.en;
 
-      $("tagline").textContent = t.tagline;
-      $("freeLabel").textContent = t.freeLabel;
-      $("rights").textContent = t.rights;
-      $("privacyLink").textContent = t.privacy;
-      $("termsLink").textContent = t.terms;
-      $("authBtn").textContent = t.authBtn;
-      $("signOutBtn").textContent = t.signOut;
+      if($("tagline")) $("tagline").textContent = t.tagline;
+      if($("freeLabel")) $("freeLabel").textContent = t.freeLabel;
+      if($("rights")) $("rights").textContent = t.rights;
+      if($("privacyLink")) $("privacyLink").textContent = t.privacy;
+      if($("termsLink")) $("termsLink").textContent = t.terms;
+      if($("authBtn")) $("authBtn").textContent = t.authBtn;
+      if($("signOutBtn")) $("signOutBtn").textContent = t.signOut;
 
-      $("cookieText").innerHTML = t.cookieText;
-      $("cookieAccept").textContent = t.cookieAccept;
-      $("cookieDecline").textContent = t.cookieDecline;
+      if($("cookieText")) $("cookieText").innerHTML = t.cookieText;
+      if($("cookieAccept")) $("cookieAccept").textContent = t.cookieAccept;
+      if($("cookieDecline")) $("cookieDecline").textContent = t.cookieDecline;
 
       if(!user){
-        $("freeLeft").textContent = "—";
-        $("authBtn").style.display = "inline-flex";
-        $("signOutBtn").style.display = "none";
+        if($("freeLeft")) $("freeLeft").textContent = "—";
+        if($("authBtn")) $("authBtn").style.display = "inline-flex";
+        if($("signOutBtn")) $("signOutBtn").style.display = "none";
         return;
       }
 
-      $("authBtn").style.display = "none";
-      $("signOutBtn").style.display = "inline-flex";
+      if($("authBtn")) $("authBtn").style.display = "none";
+      if($("signOutBtn")) $("signOutBtn").style.display = "inline-flex";
 
       await ensureProfile(user);
       const left = await getFreeLeft(user);
-      $("freeLeft").textContent = (left === null ? "—" : String(left));
+      if($("freeLeft")) $("freeLeft").textContent = (left === null ? "—" : String(left));
     }
 
     (function init(){
-      $("year").textContent = String(new Date().getFullYear());
+      if($("year")) $("year").textContent = String(new Date().getFullYear());
 
       // language
       const savedLang = localStorage.getItem(LS_LANG) || "en";
-      $("langSelect").value = savedLang;
-      $("langSelect").addEventListener("change", (e)=> {
-        localStorage.setItem(LS_LANG, e.target.value);
-        refreshTopBar();
-      });
+      if($("langSelect")){
+        $("langSelect").value = savedLang;
+        on("langSelect","change", (e)=> {
+          localStorage.setItem(LS_LANG, e.target.value);
+          refreshTopBar();
+        });
+      }
 
       // cookie
       if(!getCookieConsent()) showCookieBar();
-      $("cookieAccept").addEventListener("click", ()=> setCookieConsent("accepted"));
-      $("cookieDecline").addEventListener("click", ()=> setCookieConsent("declined"));
+      on("cookieAccept","click", ()=> setCookieConsent("accepted"));
+      on("cookieDecline","click", ()=> setCookieConsent("declined"));
+      on("resetCookie","click", ()=> { localStorage.removeItem(LS_COOKIE); showCookieBar(); });
 
       // paywall
-      $("pwClose").addEventListener("click", hidePaywall);
-      $("paywall").addEventListener("click", (e)=> { if(e.target === $("paywall")) hidePaywall(); });
-      $("pwUpgrade").addEventListener("click", ()=> alert("Subscriptions will be added next."));
+      on("pwClose","click", hidePaywall);
+      on("pwUpgrade","click", ()=> alert("Subscriptions will be added next."));
+      const pw = $("paywall");
+      if(pw) pw.addEventListener("click", (e)=> { if(e.target === pw) hidePaywall(); });
 
       // auth
-      $("authBtn").addEventListener("click", openAuth);
-      $("authClose").addEventListener("click", closeAuth);
-      $("authModal").addEventListener("click", (e)=> { if(e.target === $("authModal")) closeAuth(); });
-      $("emailBtn").addEventListener("click", ()=> sendMagicLink($("emailInput").value.trim()));
-      $("signOutBtn").addEventListener("click", signOut);
+      on("authBtn","click", openAuth);
+      on("authClose","click", closeAuth);
+      const modal = $("authModal");
+      if(modal) modal.addEventListener("click", (e)=> { if(e.target === modal) closeAuth(); });
+      on("emailBtn","click", ()=> sendMagicLink(($("emailInput")?.value || "").trim()));
+      on("signOutBtn","click", signOut);
 
       // auth state changes
-      supabase.auth.onAuthStateChange(async (_event, session) => {
+      sb.auth.onAuthStateChange(async (_event, session) => {
         if(session?.user) closeAuth();
         await refreshTopBar();
       });
 
       refreshTopBar();
 
-      // Tool buttons (require auth + consume attempts)
-      $("hGen").addEventListener("click", async ()=>{
-        if(!await consumeAttemptOrPaywall()) return;
-        $("hOut").textContent = genHumanize($("hInput").value, $("hTone").value);
-      });
-      $("hCopy").addEventListener("click", ()=> copyText($("hOut").textContent || ""));
-      $("hSave").addEventListener("click", ()=> saveTxt("virex-humanize.txt", $("hOut").textContent || ""));
+      // Tool buttons
+      on("hGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("hOut").textContent = genHumanize($("hInput").value, $("hTone").value); });
+      on("hCopy","click", ()=> copyText($("hOut").textContent || ""));
+      on("hSave","click", ()=> saveTxt("virex-humanize.txt", $("hOut").textContent || ""));
 
-      $("cGen").addEventListener("click", async ()=>{
-        if(!await consumeAttemptOrPaywall()) return;
-        $("cOut").textContent = genCoverLetter($("cInput").value, $("cStyle").value);
-      });
-      $("cCopy").addEventListener("click", ()=> copyText($("cOut").textContent || ""));
-      $("cSave").addEventListener("click", ()=> saveTxt("virex-cover-letter.txt", $("cOut").textContent || ""));
+      on("cGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("cOut").textContent = genCoverLetter($("cInput").value, $("cStyle").value); });
+      on("cCopy","click", ()=> copyText($("cOut").textContent || ""));
+      on("cSave","click", ()=> saveTxt("virex-cover-letter.txt", $("cOut").textContent || ""));
 
-      $("sGen").addEventListener("click", async ()=>{
-        if(!await consumeAttemptOrPaywall()) return;
-        $("sOut").textContent = genSocial($("sInput").value, $("sPlatform").value);
-      });
-      $("sCopy").addEventListener("click", ()=> copyText($("sOut").textContent || ""));
-      $("sSave").addEventListener("click", ()=> saveTxt("virex-social-post.txt", $("sOut").textContent || ""));
+      on("sGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("sOut").textContent = genSocial($("sInput").value, $("sPlatform").value); });
+      on("sCopy","click", ()=> copyText($("sOut").textContent || ""));
+      on("sSave","click", ()=> saveTxt("virex-social-post.txt", $("sOut").textContent || ""));
     })();
   </script>
 </body>
