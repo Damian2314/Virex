@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <title>VIREX — AI Writing Toolkit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="VIREX: humanize text, generate cover letters, and create social posts. 2 free generations." />
+  <meta name="description" content="Humanize text, generate cover letters, and create social posts. 2 free generations." />
 
-  <!-- FAVICON (VIREX minimalist V) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234f46e5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M18 20l12 26c.5 1.1 2 1.1 2.5 0L46 20' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <!-- FAVICON -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234f46e5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M22 42l6-2 18-18c1.1-1.1 1.1-2.9 0-4l-.9-.9c-1.1-1.1-2.9-1.1-4 0L23 35l-1 7z' fill='white'/%3E%3Cpath d='M38 18l8 8' stroke='rgba(255,255,255,.55)' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E">
   <meta name="theme-color" content="#0b0b13">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -102,7 +102,7 @@
     }
     textarea{min-height:150px; resize:vertical}
 
-    /* ✅ Better selects (keep) */
+    /* ✅ Better selects */
     select{
       -webkit-appearance:none;
       -moz-appearance:none;
@@ -214,10 +214,10 @@
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
-        <!-- ✅ New VIREX logo icon (minimal V) -->
         <div class="logo" aria-label="VIREX logo">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M7 7.5L12 18.5L17 7.5" stroke="rgba(255,255,255,.92)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 16.5l2.6-.9L19 7.2c.8-.8.8-2.1 0-2.9l-.3-.3c-.8-.8-2.1-.8-2.9 0L7.4 12.4 6.9 19l1.1-2.5z" fill="rgba(255,255,255,.92)"/>
+            <path d="M14.4 5.4l4.2 4.2" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
         <span>VIREX</span>
@@ -468,263 +468,4 @@
         <label>Company (optional)</label>
         <input id="company" placeholder="e.g., Acme Inc." />
 
-        <label>Your experience / strengths (bullet points)</label>
-        <textarea id="background" placeholder="- 1 year React\n- Strong communication\n- Portfolio: ..."></textarea>
-
-        <label>Job description (paste)</label>
-        <textarea id="jobDesc" placeholder="Paste job description here..."></textarea>
-
-        <div class="grid2">
-          <div>
-            <label>Language</label>
-            <select id="language">
-              <option>English</option><option>Russian</option><option>Spanish</option><option>German</option><option>French</option>
-            </select>
-          </div>
-          <div>
-            <label>Tone</label>
-            <select id="tone">
-              <option>Professional</option><option>Warm</option><option>Confident</option><option>Short & direct</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="actions">
-          <div class="leftActions">
-            <button class="btn primary" id="goBtn" data-label="💼 Generate letter">💼 Generate letter</button>
-            <span class="mini">Tailored • hiring-friendly</span>
-          </div>
-          <div class="leftActions">
-            <button class="btn" id="copyBtn">Copy</button>
-            <button class="btn" id="saveBtn">Save .txt</button>
-          </div>
-        </div>
-
-        <div class="result" id="resultBox"><pre id="resultText"></pre></div>
-      `;
-    }
-
-    function toolSocial(){
-      return `
-        <label>What is your post about?</label>
-        <textarea id="topic" placeholder="e.g., I launched an AI tool that humanizes text..."></textarea>
-
-        <div class="grid2">
-          <div>
-            <label>Platform</label>
-            <select id="platform">
-              <option>Telegram</option><option>Instagram</option><option>Twitter/X</option><option>LinkedIn</option>
-            </select>
-          </div>
-          <div>
-            <label>Style</label>
-            <select id="tone">
-              <option>Simple</option><option>Hype</option><option>Educational</option><option>Story</option><option>Professional</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="grid2">
-          <div>
-            <label>Language</label>
-            <select id="language">
-              <option>English</option><option>Russian</option><option>Spanish</option><option>German</option><option>French</option>
-            </select>
-          </div>
-          <div>
-            <label>Length</label>
-            <select id="length">
-              <option>Short</option><option selected>Medium</option><option>Long</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="actions">
-          <div class="leftActions">
-            <button class="btn primary" id="goBtn" data-label="📣 Generate post">📣 Generate post</button>
-            <span class="mini">Hook • structure • CTA</span>
-          </div>
-          <div class="leftActions">
-            <button class="btn" id="copyBtn">Copy</button>
-            <button class="btn" id="saveBtn">Save .txt</button>
-          </div>
-        </div>
-
-        <div class="result" id="resultBox"><pre id="resultText"></pre></div>
-      `;
-    }
-
-    function renderTool(){
-      const area = document.getElementById("toolArea");
-      if(state.tool === "humanize") area.innerHTML = toolHumanize();
-      if(state.tool === "coverletter") area.innerHTML = toolCoverLetter();
-      if(state.tool === "social") area.innerHTML = toolSocial();
-
-      document.getElementById("goBtn").addEventListener("click", onGenerate);
-      document.getElementById("copyBtn").addEventListener("click", onCopy);
-      document.getElementById("saveBtn").addEventListener("click", onSave);
-    }
-
-    function setLoading(isLoading){
-      state.loading = isLoading;
-      const btn = document.getElementById("goBtn");
-      if(!btn) return;
-      btn.disabled = isLoading;
-      btn.innerHTML = isLoading ? `<span class="spinner"></span> Generating...` : (btn.dataset.label || "Generate");
-    }
-
-    function readCommon(){
-      return {
-        tone: (document.getElementById("tone")?.value || "Neutral"),
-        language: (document.getElementById("language")?.value || "Auto")
-      };
-    }
-
-    async function onGenerate(){
-      if(freeLeft() <= 0){
-        toast("Free limit reached.");
-        document.getElementById("paywall").scrollIntoView({behavior:"smooth", block:"center"});
-        return;
-      }
-
-      let payload = { tool: state.tool, ...readCommon() };
-
-      if(state.tool === "humanize"){
-        payload.inputText = (document.getElementById("inputText").value || "").trim();
-        if(!payload.inputText) return toast("Paste text first.");
-      }
-
-      if(state.tool === "coverletter"){
-        payload.jobTitle = (document.getElementById("jobTitle").value || "").trim();
-        payload.company = (document.getElementById("company").value || "").trim();
-        payload.background = (document.getElementById("background").value || "").trim();
-        payload.jobDesc = (document.getElementById("jobDesc").value || "").trim();
-        if(!payload.jobTitle || !payload.background || !payload.jobDesc) return toast("Fill required fields.");
-      }
-
-      if(state.tool === "social"){
-        payload.topic = (document.getElementById("topic").value || "").trim();
-        payload.platform = (document.getElementById("platform").value || "Telegram");
-        payload.length = (document.getElementById("length").value || "Medium");
-        if(!payload.topic) return toast("Describe your topic.");
-      }
-
-      const resultBox = document.getElementById("resultBox");
-      const resultText = document.getElementById("resultText");
-      resultBox.style.display = "none";
-      resultText.textContent = "";
-
-      setLoading(true);
-      try{
-        const r = await fetch("/api/generate", {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await r.json();
-        if(!r.ok){
-          toast(data?.error || "Request failed");
-          return;
-        }
-
-        resultBox.style.display = "block";
-        resultText.textContent = data.outputText || "";
-        setUsed(getUsed() + 1);
-        toast("Done ✅");
-      } catch(e){
-        toast("Network error");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    function onCopy(){
-      const text = document.getElementById("resultText")?.textContent || "";
-      if(!text.trim()) return toast("Nothing to copy.");
-      navigator.clipboard.writeText(text);
-      toast("Copied ✨");
-    }
-
-    function onSave(){
-      const text = document.getElementById("resultText")?.textContent || "";
-      if(!text.trim()) return toast("Nothing to save.");
-      const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `virex-${state.tool}.txt`;
-      a.click();
-      URL.revokeObjectURL(a.href);
-      toast("Saved ✅");
-    }
-
-    document.getElementById("resetBtn").addEventListener("click", ()=>{
-      localStorage.removeItem(LS_KEY);
-      renderFreeInfo();
-      toast("Counter reset");
-    });
-
-    document.getElementById("pricingBtn").addEventListener("click", ()=>{
-      document.getElementById("paywall").style.display = "block";
-      document.getElementById("paywall").scrollIntoView({behavior:"smooth", block:"center"});
-    });
-
-    document.getElementById("buyBtn").addEventListener("click", ()=> toast("Payments next ✅"));
-
-    function showSupport(){
-      const lang = getLang();
-      toast(i18n[lang].supportMsg);
-    }
-    window.showSupport = showSupport;
-
-    function getLang(){
-      const saved = localStorage.getItem(LANG_KEY);
-      return (saved && i18n[saved]) ? saved : "en";
-    }
-
-    function setLang(l){
-      if(!i18n[l]) l = "en";
-      localStorage.setItem(LANG_KEY, l);
-      applyLang();
-    }
-
-    function applyLang(){
-      const l = getLang();
-      const t = i18n[l];
-      document.getElementById("lang").value = l;
-
-      document.getElementById("ftLangLabel").textContent = t.langLabel;
-      document.getElementById("ftProduct").textContent = t.product;
-      document.getElementById("ftLegal").textContent = t.legal;
-      document.getElementById("ftSupport").textContent = t.support;
-      document.getElementById("ftBrandDesc").textContent = t.brandDesc;
-      document.getElementById("ftPrivacy").textContent = t.privacy;
-      document.getElementById("ftTerms").textContent = t.terms;
-
-      const y = new Date().getFullYear();
-      document.getElementById("ftCopyright").innerHTML = t.copyright(y);
-    }
-
-    document.getElementById("lang").addEventListener("change", (e)=>{
-      setLang(e.target.value);
-      toast("Saved ✅");
-    });
-
-    document.querySelectorAll(".tab").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-        btn.classList.add("active");
-        state.tool = btn.dataset.tool;
-        renderTool();
-      });
-    });
-
-    document.getElementById("yr").textContent = new Date().getFullYear();
-    document.getElementById("yr2").textContent = new Date().getFullYear();
-
-    renderFreeInfo();
-    renderTool();
-    applyLang();
-  </script>
-</body>
-</html>
+        <label>Your experience / strengths (bullet
