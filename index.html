@@ -22,10 +22,9 @@
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --radius: 18px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
       font-family:var(--sans);
@@ -36,710 +35,136 @@
         radial-gradient(900px 900px at 50% 100%, rgba(124,92,255,.08), transparent 55%),
         var(--bg);
     }
-    a{color:inherit}
-    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 26px;}
-    header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px; position:relative; z-index:5;}
-    .brand{display:flex;align-items:center;gap:12px;user-select:none;}
-    .logo{
-      width:40px;height:40px;border-radius:14px;
-      background: rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow: 0 12px 32px rgba(124,92,255,.18);
-      display:flex;align-items:center;justify-content:center;
-    }
-    .logoImg{width:22px;height:22px;display:block;}
-    .brand h1{margin:0;font-size:18px;letter-spacing:.18em;text-transform:uppercase;line-height:1.15;}
-    .brand small{display:block;margin-top:3px;font-size:12px;color:var(--muted);letter-spacing:.02em;}
 
-    .topRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end; position:relative; z-index:5;}
-    .pill{
-      display:flex;align-items:center;gap:10px;
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--line);
-      padding:10px 12px;border-radius:999px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.28);
-      backdrop-filter: blur(10px);
-    }
-    .pill b{font-size:12px}
-    .pill span{font-size:12px;color:var(--muted)}
-    .btn{
-      border:1px solid var(--line2);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      transition: transform .05s ease, border-color .2s ease, background .2s ease;
-      font-weight:600;
-      font-size:12px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-    }
-    .btn:hover{border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.06)}
-    .btn:active{transform: translateY(1px)}
-    .btn.primary{
-      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(124,92,255,.65));
-      border-color:rgba(124,92,255,.75);
-      box-shadow: 0 12px 28px rgba(124,92,255,.22);
-    }
-    .btn.danger{
-      border-color:rgba(239,68,68,.45);
-      background:rgba(239,68,68,.10);
-    }
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px}
+    header{display:flex;justify-content:space-between;align-items:center;z-index:5;position:relative}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:40px;height:40px;border-radius:14px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+    .logoImg{width:22px}
+    .topRight{display:flex;gap:10px;align-items:center}
 
-    .grid{display:grid;grid-template-columns: 1fr;gap:14px;margin-top:16px;}
-    @media(min-width: 960px){ .grid{grid-template-columns: 1fr 1fr 1fr;} }
+    .pill{padding:8px 12px;border-radius:999px;border:1px solid var(--line);font-size:12px}
+    .btn{cursor:pointer;border-radius:12px;padding:10px 12px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--text)}
+    .btn.primary{background:linear-gradient(135deg,#7c5cff,#5b45d9)}
+    .btn.danger{border-color:#ef4444;color:#ef4444}
 
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .cardHeader{padding:16px 16px 10px;border-bottom:1px solid var(--line);background: rgba(0,0,0,.10);}
-    .cardHeader h2{margin:0;font-size:14px;letter-spacing:.08em;text-transform:uppercase;}
-    .cardHeader p{margin:7px 0 0;font-size:12px;color:var(--muted);line-height:1.45;}
-    .cardBody{padding:14px 16px 16px;}
-    .field{margin-top:10px;}
-    .label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:7px;}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+    @media(min-width:960px){.grid{grid-template-columns:1fr 1fr 1fr}}
 
-    /* Select styling */
-    .selectWrap{position:relative;width:100%;}
-    select{
-      width:100%;
-      appearance:none;-webkit-appearance:none;-moz-appearance:none;
-      background: rgba(255,255,255,.04);
-      border:1px solid var(--line2);
-      color:var(--text);
-      padding:11px 40px 11px 12px;
-      border-radius: 14px;
-      outline:none;
-      font-weight:600;
-      font-size:12px;
-      cursor:pointer;
-      transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
-    }
-    select:focus{
-      border-color: rgba(124,92,255,.75);
-      box-shadow: 0 0 0 4px rgba(124,92,255,.18);
-      background: rgba(255,255,255,.05);
-    }
-    select option{background:#0b1020;color:var(--text);}
-    .selectWrap:after{
-      content:"";
-      position:absolute;right:14px;top:50%;
-      width:10px;height:10px;
-      transform: translateY(-50%) rotate(45deg);
-      border-right:2px solid rgba(255,255,255,.55);
-      border-bottom:2px solid rgba(255,255,255,.55);
-      pointer-events:none;
-    }
+    .card{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03)}
+    .cardHeader{padding:14px;border-bottom:1px solid var(--line)}
+    .cardBody{padding:14px}
+    textarea,select{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line2);border-radius:14px;color:var(--text);padding:10px}
 
-    textarea{
-      width:100%;min-height:120px;
-      background: rgba(255,255,255,.03);
-      border:1px solid var(--line2);
-      color:var(--text);
-      padding:12px;border-radius: 14px;
-      outline:none;resize:vertical;
-      line-height:1.45;font-size:13px;
-    }
-    textarea:focus{
-      border-color: rgba(124,92,255,.75);
-      box-shadow: 0 0 0 4px rgba(124,92,255,.18);
-    }
-    .out{
-      margin-top:10px;
-      background: rgba(0,0,0,.22);
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding:12px;
-      font-family: var(--mono);
-      font-size:12px;
-      line-height:1.5;
-      white-space:pre-wrap;
-      min-height:88px;
-    }
-    .hint{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5;}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+    footer{margin-top:24px;border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;flex-wrap:wrap}
+    .footerLinks{display:flex;gap:12px;align-items:center}
 
-    footer{
-      margin-top:18px;padding:16px 0 6px;border-top:1px solid var(--line);
-      display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
-    }
-    .footerLeft{color:var(--muted);font-size:12px;line-height:1.4;}
-    .footerLinks{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end;font-size:12px;}
-    .footerLinks a{color:var(--muted);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,.18);}
-    .footerLinks a:hover{color:var(--text)}
+    .modal,.paywall,.cookieBar{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999}
+    .modalCard,.paywallCard{background:#0b0f19;border-radius:18px;padding:18px;max-width:480px;margin:auto}
 
-    /* Paywall */
-    .paywall{
-      position:fixed;inset:0;display:none;align-items:center;justify-content:center;
-      padding:18px;background: rgba(0,0,0,.70);backdrop-filter: blur(10px);z-index:9999;
-    }
-    .paywallCard{
-      width:min(560px, 100%);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.14);
-      border-radius: 22px;
-      box-shadow: 0 30px 90px rgba(0,0,0,.7);
-      padding:18px;position:relative;overflow:hidden;
-    }
-    .paywallCard h3{margin:0 0 6px;font-size:16px;letter-spacing:.02em;}
-    .paywallCard p{margin:0;color:var(--muted);font-size:13px;line-height:1.55;}
-    .paywallRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
-    .small{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5;}
-
-    /* Auth modal */
-    .modal{
-      position:fixed;inset:0;display:none;align-items:center;justify-content:center;
-      padding:18px;background: rgba(0,0,0,.70);backdrop-filter: blur(10px);z-index:10000;
-    }
-    .modalCard{
-      width:min(560px, 100%);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.14);
-      border-radius: 22px;
-      box-shadow: 0 30px 90px rgba(0,0,0,.7);
-      padding:18px;
-    }
-    .modalCard h3{margin:0 0 6px;font-size:16px;}
-    .modalCard p{margin:0;color:var(--muted);font-size:13px;line-height:1.55;}
-    .hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0;}
-    .input{
-      width:100%;
-      background: rgba(255,255,255,.03);
-      border:1px solid var(--line2);
-      color:var(--text);
-      padding:11px 12px;
-      border-radius: 14px;
-      outline:none;
-      font-size:13px;
-    }
-    .input:focus{
-      border-color: rgba(124,92,255,.75);
-      box-shadow: 0 0 0 4px rgba(124,92,255,.18);
-    }
-    .status{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5;}
-    .status.ok{color:#9fe3b1}
-    .status.err{color:#ffb4b4}
-
-    /* Cookie */
-    .cookieBar{
-      position:fixed;left:0; right:0; bottom:0;display:none;z-index:9998;
-      padding:14px 14px 16px;background: rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);border-top:1px solid rgba(255,255,255,.10);
-    }
-    .cookieInner{
-      max-width:1100px;margin:0 auto;display:flex;gap:12px;
-      align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
-    }
-    .cookieText{
-      min-width:min(620px, 100%);
-      color:var(--muted);font-size:12px;line-height:1.55;
-    }
-    .cookieText b{color:var(--text)}
-    .cookieActions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
-    .cookieLink{color:var(--muted);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,.18);font-size:12px;}
-    .cookieLink:hover{color:var(--text)}
+    .cookieBar{bottom:0;top:auto;padding:14px}
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <img class="logoImg" src="/mark.svg" alt="" />
-        </div>
-        <div>
-          <h1>VIREX</h1>
-          <small id="tagline">AI Writing Toolkit</small>
-        </div>
-      </div>
-
-      <div class="topRight">
-        <div class="pill" title="Free generations left (per account)">
-          <b id="freeLabel">Free left</b>
-          <span><span id="freeLeft">—</span></span>
-        </div>
-
-        <button class="btn" id="authBtn" type="button">Sign in</button>
-        <button class="btn danger" id="signOutBtn" type="button" style="display:none;">Sign out</button>
-      </div>
-    </header>
-
-    <div class="grid">
-      <section class="card">
-        <div class="cardHeader">
-          <h2>Humanize</h2>
-          <p>Make AI-like text feel more natural and human.</p>
-        </div>
-        <div class="cardBody">
-          <div class="field">
-            <div class="label"><span>Tone</span></div>
-            <div class="selectWrap">
-              <select id="hTone">
-                <option value="neutral">Neutral</option>
-                <option value="friendly">Friendly</option>
-                <option value="formal">Formal</option>
-                <option value="confident">Confident</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="label"><span>Input</span></div>
-            <textarea id="hInput" placeholder="Paste your text here..."></textarea>
-          </div>
-
-          <div class="actions">
-            <button class="btn primary" id="hGen" type="button">Generate</button>
-            <button class="btn" id="hCopy" type="button">Copy</button>
-            <button class="btn" id="hSave" type="button">Save .txt</button>
-          </div>
-
-          <div class="out" id="hOut"></div>
-          <div class="hint">Tip: keep the main idea, but vary sentence structure and add natural transitions.</div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="cardHeader">
-          <h2>Cover Letter</h2>
-          <p>Generate a tailored cover letter from a short brief.</p>
-        </div>
-        <div class="cardBody">
-          <div class="field">
-            <div class="label"><span>Style</span></div>
-            <div class="selectWrap">
-              <select id="cStyle">
-                <option value="concise">Concise</option>
-                <option value="standard">Standard</option>
-                <option value="detailed">Detailed</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="label"><span>Brief</span></div>
-            <textarea id="cInput" placeholder="Role, company, experience, key achievements, skills, tone..."></textarea>
-          </div>
-
-          <div class="actions">
-            <button class="btn primary" id="cGen" type="button">Generate</button>
-            <button class="btn" id="cCopy" type="button">Copy</button>
-            <button class="btn" id="cSave" type="button">Save .txt</button>
-          </div>
-
-          <div class="out" id="cOut"></div>
-          <div class="hint">Tip: include 2–3 achievements with numbers (%, $, time saved, users, etc.).</div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="cardHeader">
-          <h2>Social Post</h2>
-          <p>Write a clean post for Twitter/X, LinkedIn, or Instagram.</p>
-        </div>
-        <div class="cardBody">
-          <div class="field">
-            <div class="label"><span>Platform</span></div>
-            <div class="selectWrap">
-              <select id="sPlatform">
-                <option value="linkedin">LinkedIn</option>
-                <option value="x">Twitter / X</option>
-                <option value="instagram">Instagram</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="label"><span>Topic</span></div>
-            <textarea id="sInput" placeholder="What do you want to post about? Add key points, CTA, hashtags..."></textarea>
-          </div>
-
-          <div class="actions">
-            <button class="btn primary" id="sGen" type="button">Generate</button>
-            <button class="btn" id="sCopy" type="button">Copy</button>
-            <button class="btn" id="sSave" type="button">Save .txt</button>
-          </div>
-
-          <div class="out" id="sOut"></div>
-          <div class="hint">Tip: one strong hook + 3 bullets + CTA works best on most platforms.</div>
-        </div>
-      </section>
-    </div>
-
-    <footer>
-      <div class="footerLeft">
-        <div>© <span id="year"></span> <b>VIREX</b>. <span id="rights">All rights reserved.</span></div>
-      </div>
-
-      <div class="footerLinks">
-        <a href="/privacy.html" id="privacyLink">Privacy Policy</a>
-        <a href="/terms.html" id="termsLink">Terms of Service</a>
-
-        <div class="selectWrap" style="width:160px;">
-          <select id="langSelect" aria-label="Language">
-            <option value="en">English</option>
-            <option value="ru">Русский</option>
-          </select>
-        </div>
-
-        <!-- Debug / test helper: reset cookie key -->
-        <button class="btn" id="resetCookie" type="button" title="Show cookie banner again">Reset cookie</button>
-      </div>
-    </footer>
-  </div>
-
-  <!-- Paywall -->
-  <div class="paywall" id="paywall">
-    <div class="paywallCard" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
-      <h3 id="pwTitle">Upgrade to continue</h3>
-      <p id="pwText">You’ve used your free generations. Upgrade later (subscriptions will be added next).</p>
-
-      <div class="paywallRow">
-        <button class="btn primary" id="pwUpgrade" type="button">Upgrade</button>
-        <button class="btn" id="pwClose" type="button">Close</button>
-      </div>
-
-      <div class="small" id="pwSmall">
-        Next: promo codes, subscriptions, profile (avatar/name), and support email.
-      </div>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <div class="logo"><img src="/mark.svg" class="logoImg"></div>
+    <div>
+      <b>VIREX</b>
+      <div style="font-size:12px;color:#aaa">AI Writing Toolkit</div>
     </div>
   </div>
 
-  <!-- Auth Modal (EMAIL ONLY) -->
-  <div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <div class="modalCard">
-      <h3 id="authTitle">Sign in to VIREX</h3>
-      <p id="authSub">Email-only login (magic link). No passwords.</p>
+  <div class="topRight">
+    <div class="pill">Free left: <span id="freeLeft">—</span></div>
+    <button class="btn" id="authBtn">Sign in</button>
+    <button class="btn danger" id="signOutBtn" style="display:none">Sign out</button>
+  </div>
+</header>
 
-      <div class="hr"></div>
-
-      <div class="label" style="margin-bottom:8px;">
-        <span>Email</span>
-      </div>
-      <input class="input" id="emailInput" type="email" placeholder="you@example.com" autocomplete="email" />
-      <div class="actions" style="margin-top:10px;">
-        <button class="btn primary" id="emailBtn" type="button">Send magic link</button>
-        <button class="btn" id="authClose" type="button">Close</button>
-      </div>
-
-      <div class="status" id="authStatus"></div>
-      <div class="small" style="margin-top:10px;">
-        By continuing, you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>.
-      </div>
+<div class="grid">
+  <div class="card">
+    <div class="cardHeader"><b>Humanize</b></div>
+    <div class="cardBody">
+      <select id="hTone">
+        <option value="neutral">Neutral</option>
+        <option value="friendly">Friendly</option>
+      </select>
+      <textarea id="hInput" placeholder="Paste text..."></textarea>
+      <button class="btn primary" id="hGen">Generate</button>
+      <pre id="hOut"></pre>
     </div>
   </div>
 
-  <!-- Cookie Consent -->
-  <div class="cookieBar" id="cookieBar" role="dialog" aria-modal="false" aria-label="Cookie consent">
-    <div class="cookieInner">
-      <div class="cookieText" id="cookieText">
-        <b>VIREX</b> uses cookies/local storage to remember preferences and improve the experience.
-        You can read more in our <a class="cookieLink" href="/privacy.html">Privacy Policy</a>.
-      </div>
-      <div class="cookieActions">
-        <button class="btn primary" id="cookieAccept" type="button">Accept</button>
-        <button class="btn" id="cookieDecline" type="button">Decline</button>
-      </div>
+  <div class="card">
+    <div class="cardHeader"><b>Cover Letter</b></div>
+    <div class="cardBody">
+      <textarea id="cInput" placeholder="Brief..."></textarea>
+      <button class="btn primary" id="cGen">Generate</button>
+      <pre id="cOut"></pre>
     </div>
   </div>
 
-  <!-- Supabase via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <div class="card">
+    <div class="cardHeader"><b>Social Post</b></div>
+    <div class="cardBody">
+      <textarea id="sInput" placeholder="Topic..."></textarea>
+      <button class="btn primary" id="sGen">Generate</button>
+      <pre id="sOut"></pre>
+    </div>
+  </div>
+</div>
 
-  <script>
-    // -----------------------------
-    // Supabase (YOUR REAL KEYS)
-    // -----------------------------
-    const SUPABASE_URL = "https://yrcgqbgomzqtrssdyewd.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_Uw04cxElgXksa7K-bUr4SA_sa85Z44C";
+<footer>
+  <div>© VIREX</div>
+  <div class="footerLinks">
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+  </div>
+</footer>
+</div>
 
-    // NEVER redeclare "supabase" elsewhere in this file.
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<!-- Auth modal -->
+<div class="modal" id="authModal">
+  <div class="modalCard">
+    <input id="emailInput" placeholder="you@email.com">
+    <button class="btn primary" id="emailBtn">Send magic link</button>
+  </div>
+</div>
 
-    const I18N = {
-      en: {
-        tagline:"AI Writing Toolkit",
-        freeLabel:"Free left",
-        rights:"All rights reserved.",
-        privacy:"Privacy Policy",
-        terms:"Terms of Service",
-        authBtn:"Sign in",
-        signOut:"Sign out",
-        cookieText:"<b>VIREX</b> uses cookies/local storage to remember preferences and improve the experience. You can read more in our <a class='cookieLink' href='/privacy.html'>Privacy Policy</a>.",
-        cookieAccept:"Accept",
-        cookieDecline:"Decline",
-      },
-      ru: {
-        tagline:"AI инструменты для текста",
-        freeLabel:"Бесплатно осталось",
-        rights:"Все права защищены.",
-        privacy:"Политика конфиденциальности",
-        terms:"Условия использования",
-        authBtn:"Войти",
-        signOut:"Выйти",
-        cookieText:"<b>VIREX</b> использует cookies/local storage, чтобы запоминать настройки и улучшать опыт. Подробнее в <a class='cookieLink' href='/privacy.html'>Политике конфиденциальности</a>.",
-        cookieAccept:"Принять",
-        cookieDecline:"Отклонить",
-      }
-    };
+<!-- Cookie -->
+<div class="cookieBar" id="cookieBar">
+  <div class="modalCard">
+    We use cookies.
+    <button class="btn primary" id="cookieAccept">Accept</button>
+  </div>
+</div>
 
-    const LS_LANG = "virex_lang";
-    const LS_COOKIE = "virex_cookie_consent";
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sb = supabase.createClient(
+  "https://yrcgqbgomzqtrssdyewd.supabase.co",
+  "sb_publishable_Uw04cxElgXksa7K-bUr4SA_sa85Z44C"
+);
 
-    const $ = (id) => document.getElementById(id);
-    const on = (id, evt, fn) => { const el = $(id); if(el) el.addEventListener(evt, fn); };
+const $ = id => document.getElementById(id);
+const LS_COOKIE = "virex_cookie";
 
-    function setStatus(text, kind){
-      const el = $("authStatus");
-      if(!el) return;
-      el.textContent = text || "";
-      el.className = "status" + (kind ? " " + kind : "");
-    }
+if(!localStorage.getItem(LS_COOKIE)) $("cookieBar").style.display="block";
+$("cookieAccept").onclick=()=>{localStorage.setItem(LS_COOKIE,"1");$("cookieBar").style.display="none";};
 
-    // Cookie
-    function getCookieConsent(){ return localStorage.getItem(LS_COOKIE); }
-    function showCookieBar(){ const b = $("cookieBar"); if(b) b.style.display = "block"; }
-    function hideCookieBar(){ const b = $("cookieBar"); if(b) b.style.display = "none"; }
-    function setCookieConsent(value){ localStorage.setItem(LS_COOKIE, value); hideCookieBar(); }
+$("authBtn").onclick=()=> $("authModal").style.display="flex";
+$("emailBtn").onclick=()=> sb.auth.signInWithOtp({email:$("emailInput").value});
 
-    // Paywall
-    function showPaywall(){ const p = $("paywall"); if(p) p.style.display = "flex"; }
-    function hidePaywall(){ const p = $("paywall"); if(p) p.style.display = "none"; }
-
-    // Auth modal
-    function openAuth(){ setStatus("", ""); const m = $("authModal"); if(m) m.style.display = "flex"; }
-    function closeAuth(){ const m = $("authModal"); if(m) m.style.display = "none"; }
-
-    // Profiles (free attempts per account)
-    async function ensureProfile(user){
-      if(!user) return null;
-      const email = user.email || null;
-
-      let { data, error } = await sb
-        .from("profiles")
-        .select("id,email,free_left")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if(!data){
-        const ins = await sb.from("profiles").insert({
-          id: user.id,
-          email: email,
-          free_left: 2
-        }).select("id,email,free_left").single();
-        data = ins.data;
-        error = ins.error;
-      }
-
-      if(data && !data.email && email){
-        await sb.from("profiles").update({ email: email }).eq("id", user.id);
-        data.email = email;
-      }
-
-      if(error) console.error(error);
-      return data || null;
-    }
-
-    async function getFreeLeft(user){
-      if(!user) return null;
-      const { data, error } = await sb
-        .from("profiles")
-        .select("free_left")
-        .eq("id", user.id)
-        .single();
-      if(error){ console.error(error); return null; }
-      return data.free_left;
-    }
-
-    async function setFreeLeft(user, n){
-      if(!user) return false;
-      const { error } = await sb
-        .from("profiles")
-        .update({ free_left: Math.max(0, n), updated_at: new Date().toISOString() })
-        .eq("id", user.id);
-      if(error){ console.error(error); return false; }
-      return true;
-    }
-
-    async function requireAuthOrOpen(){
-      const { data } = await sb.auth.getSession();
-      if(data.session?.user) return data.session.user;
-      openAuth();
-      return null;
-    }
-
-    async function consumeAttemptOrPaywall(){
-      const user = await requireAuthOrOpen();
-      if(!user) return false;
-
-      await ensureProfile(user);
-      const left = await getFreeLeft(user);
-
-      if(left === null){ openAuth(); return false; }
-      if(left <= 0){ showPaywall(); return false; }
-
-      await setFreeLeft(user, left - 1);
-      await refreshTopBar();
-      return true;
-    }
-
-    // Copy / Save
-    async function copyText(text){
-      try{ await navigator.clipboard.writeText(text); }
-      catch(e){
-        const ta = document.createElement("textarea");
-        ta.value = text; document.body.appendChild(ta);
-        ta.select(); document.execCommand("copy"); ta.remove();
-      }
-    }
-    function saveTxt(filename, content){
-      const blob = new Blob([content], {type:"text/plain;charset=utf-8"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(a.href);
-    }
-
-    // Demo generators
-    function genHumanize(input, tone){
-      if(!input.trim()) return "";
-      const prefix = tone === "formal" ? "Refined version:\n"
-                  : tone === "friendly" ? "Friendly version:\n"
-                  : tone === "confident" ? "Confident version:\n"
-                  : "Humanized version:\n";
-      return prefix + input.trim();
-    }
-    function genCoverLetter(brief, style){
-      if(!brief.trim()) return "";
-      const head = style === "concise" ? "Cover Letter (Concise)\n"
-                 : style === "detailed" ? "Cover Letter (Detailed)\n"
-                 : "Cover Letter\n";
-      return head + "—\n" + brief.trim();
-    }
-    function genSocial(topic, platform){
-      if(!topic.trim()) return "";
-      const head = platform === "linkedin" ? "LinkedIn Post\n"
-                 : platform === "instagram" ? "Instagram Caption\n"
-                 : "Twitter/X Post\n";
-      return head + "—\n" + topic.trim();
-    }
-
-    async function sendMagicLink(email){
-      setStatus("Sending magic link…", "");
-      if(!email || !email.includes("@")){ setStatus("Enter a valid email.", "err"); return; }
-
-      const { error } = await sb.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: window.location.origin + "/index.html" }
-      });
-
-      if(error){ console.error(error); setStatus(error.message || "Failed to send email.", "err"); return; }
-      setStatus("Check your email. Click the link to sign in.", "ok");
-    }
-
-    async function signOut(){
-      await sb.auth.signOut();
-      await refreshTopBar();
-    }
-
-    async function refreshTopBar(){
-      const { data } = await sb.auth.getSession();
-      const user = data.session?.user || null;
-
-      const lang = localStorage.getItem(LS_LANG) || "en";
-      const t = I18N[lang] || I18N.en;
-
-      if($("tagline")) $("tagline").textContent = t.tagline;
-      if($("freeLabel")) $("freeLabel").textContent = t.freeLabel;
-      if($("rights")) $("rights").textContent = t.rights;
-      if($("privacyLink")) $("privacyLink").textContent = t.privacy;
-      if($("termsLink")) $("termsLink").textContent = t.terms;
-      if($("authBtn")) $("authBtn").textContent = t.authBtn;
-      if($("signOutBtn")) $("signOutBtn").textContent = t.signOut;
-
-      if($("cookieText")) $("cookieText").innerHTML = t.cookieText;
-      if($("cookieAccept")) $("cookieAccept").textContent = t.cookieAccept;
-      if($("cookieDecline")) $("cookieDecline").textContent = t.cookieDecline;
-
-      if(!user){
-        if($("freeLeft")) $("freeLeft").textContent = "—";
-        if($("authBtn")) $("authBtn").style.display = "inline-flex";
-        if($("signOutBtn")) $("signOutBtn").style.display = "none";
-        return;
-      }
-
-      if($("authBtn")) $("authBtn").style.display = "none";
-      if($("signOutBtn")) $("signOutBtn").style.display = "inline-flex";
-
-      await ensureProfile(user);
-      const left = await getFreeLeft(user);
-      if($("freeLeft")) $("freeLeft").textContent = (left === null ? "—" : String(left));
-    }
-
-    (function init(){
-      if($("year")) $("year").textContent = String(new Date().getFullYear());
-
-      // language
-      const savedLang = localStorage.getItem(LS_LANG) || "en";
-      if($("langSelect")){
-        $("langSelect").value = savedLang;
-        on("langSelect","change", (e)=> {
-          localStorage.setItem(LS_LANG, e.target.value);
-          refreshTopBar();
-        });
-      }
-
-      // cookie
-      if(!getCookieConsent()) showCookieBar();
-      on("cookieAccept","click", ()=> setCookieConsent("accepted"));
-      on("cookieDecline","click", ()=> setCookieConsent("declined"));
-      on("resetCookie","click", ()=> { localStorage.removeItem(LS_COOKIE); showCookieBar(); });
-
-      // paywall
-      on("pwClose","click", hidePaywall);
-      on("pwUpgrade","click", ()=> alert("Subscriptions will be added next."));
-      const pw = $("paywall");
-      if(pw) pw.addEventListener("click", (e)=> { if(e.target === pw) hidePaywall(); });
-
-      // auth
-      on("authBtn","click", openAuth);
-      on("authClose","click", closeAuth);
-      const modal = $("authModal");
-      if(modal) modal.addEventListener("click", (e)=> { if(e.target === modal) closeAuth(); });
-      on("emailBtn","click", ()=> sendMagicLink(($("emailInput")?.value || "").trim()));
-      on("signOutBtn","click", signOut);
-
-      // auth state changes
-      sb.auth.onAuthStateChange(async (_event, session) => {
-        if(session?.user) closeAuth();
-        await refreshTopBar();
-      });
-
-      refreshTopBar();
-
-      // Tool buttons
-      on("hGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("hOut").textContent = genHumanize($("hInput").value, $("hTone").value); });
-      on("hCopy","click", ()=> copyText($("hOut").textContent || ""));
-      on("hSave","click", ()=> saveTxt("virex-humanize.txt", $("hOut").textContent || ""));
-
-      on("cGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("cOut").textContent = genCoverLetter($("cInput").value, $("cStyle").value); });
-      on("cCopy","click", ()=> copyText($("cOut").textContent || ""));
-      on("cSave","click", ()=> saveTxt("virex-cover-letter.txt", $("cOut").textContent || ""));
-
-      on("sGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("sOut").textContent = genSocial($("sInput").value, $("sPlatform").value); });
-      on("sCopy","click", ()=> copyText($("sOut").textContent || ""));
-      on("sSave","click", ()=> saveTxt("virex-social-post.txt", $("sOut").textContent || ""));
-    })();
-  </script>
+sb.auth.onAuthStateChange(async(_,s)=>{
+  if(s?.user){
+    $("authModal").style.display="none";
+    $("authBtn").style.display="none";
+    $("signOutBtn").style.display="inline-block";
+  }
+});
+</script>
 </body>
 </html>
