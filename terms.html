@@ -51,6 +51,11 @@
       gap:8px;
     }
     .btn:hover{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+    .primary{
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(124,92,255,.65));
+      border-color:rgba(124,92,255,.75);
+      box-shadow: 0 12px 28px rgba(124,92,255,.22);
+    }
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid rgba(255,255,255,.10);
@@ -83,6 +88,35 @@
       border-bottom:1px dashed rgba(255,255,255,.18);
     }
     .footerLinks a:hover{color:var(--text)}
+
+    /* Cookie bar */
+    .cookieBar{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      display:none;
+      z-index:9998;
+      padding:14px 14px 16px;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .cookieInner{
+      max-width:900px;
+      margin:0 auto;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .cookieText{
+      min-width:min(560px, 100%);
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.55;
+    }
+    .cookieText b{color:var(--text)}
+    .cookieActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
   </style>
 </head>
 <body>
@@ -170,8 +204,35 @@
     </footer>
   </div>
 
+  <!-- Cookie Consent -->
+  <div class="cookieBar" id="cookieBar" role="dialog" aria-modal="false" aria-label="Cookie consent">
+    <div class="cookieInner">
+      <div class="cookieText">
+        <b>VIREX</b> uses cookies/local storage to remember preferences and improve the experience.
+      </div>
+      <div class="cookieActions">
+        <button class="btn primary" id="cookieAccept" type="button">Accept</button>
+        <button class="btn" id="cookieDecline" type="button">Decline</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     document.getElementById("year").textContent = String(new Date().getFullYear());
+
+    const LS_COOKIE = "virex_cookie_consent";
+    const cookieBar = document.getElementById("cookieBar");
+    const consent = localStorage.getItem(LS_COOKIE);
+    if(!consent) cookieBar.style.display = "block";
+
+    document.getElementById("cookieAccept").addEventListener("click", ()=>{
+      localStorage.setItem(LS_COOKIE, "accepted");
+      cookieBar.style.display = "none";
+    });
+    document.getElementById("cookieDecline").addEventListener("click", ()=>{
+      localStorage.setItem(LS_COOKIE, "declined");
+      cookieBar.style.display = "none";
+    });
   </script>
 </body>
 </html>
