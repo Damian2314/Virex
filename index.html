@@ -389,8 +389,6 @@
           </select>
         </div>
 
-        <!-- Debug / test helper: reset cookie key -->
-        <button class="btn" id="resetCookie" type="button" title="Show cookie banner again">Reset cookie</button>
       </div>
     </footer>
   </div>
@@ -703,7 +701,6 @@
       if(!getCookieConsent()) showCookieBar();
       on("cookieAccept","click", ()=> setCookieConsent("accepted"));
       on("cookieDecline","click", ()=> setCookieConsent("declined"));
-      on("resetCookie","click", ()=> { localStorage.removeItem(LS_COOKIE); showCookieBar(); });
 
       // paywall
       on("pwClose","click", hidePaywall);
