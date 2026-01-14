@@ -261,7 +261,8 @@
       </div>
 
       <div class="topRight">
-        <div class="pill" title="Free generations left (per account)">
+        <!-- IMPORTANT: pill shows only when logged in AND free_left > 0 -->
+        <div class="pill" id="freePill" title="Free generations left (per account)" style="display:none;">
           <b id="freeLabel">Free left</b>
           <span><span id="freeLeft">—</span></span>
         </div>
@@ -584,7 +585,7 @@
       if(left <= 0){ showPaywall(); return false; }
 
       await setFreeLeft(user, left - 1);
-      await refreshTopBar();
+      await refreshTopBar(); // will hide pill when reaches 0
       return true;
     }
 
@@ -645,6 +646,7 @@
       setStatus("Check your email. Click the link to sign in.", "ok");
     }
 
+    // ✅ UPDATED: robust sign out + UI reset
     async function signOut(){
       try{
         await sb.auth.signOut();
@@ -652,7 +654,6 @@
         console.error("Sign out failed:", e);
       }
 
-      // UI reset (чтобы всё выглядело чисто после выхода)
       closeAuth();
       setStatus("", "");
       const emailEl = $("emailInput");
@@ -680,8 +681,10 @@
       if($("cookieAccept")) $("cookieAccept").textContent = t.cookieAccept;
       if($("cookieDecline")) $("cookieDecline").textContent = t.cookieDecline;
 
+      // ✅ Show nothing if not logged in
       if(!user){
         if($("freeLeft")) $("freeLeft").textContent = "—";
+        if($("freePill")) $("freePill").style.display = "none";
         if($("authBtn")) $("authBtn").style.display = "inline-flex";
         if($("signOutBtn")) $("signOutBtn").style.display = "none";
         return;
@@ -692,7 +695,18 @@
 
       await ensureProfile(user);
       const left = await getFreeLeft(user);
-      if($("freeLeft")) $("freeLeft").textContent = (left === null ? "—" : String(left));
+
+      // ✅ Pill shows only when logged in AND left > 0
+      if(left === null){
+        if($("freePill")) $("freePill").style.display = "none";
+        if($("freeLeft")) $("freeLeft").textContent = "—";
+      } else if(left <= 0){
+        if($("freePill")) $("freePill").style.display = "none";
+        if($("freeLeft")) $("freeLeft").textContent = "0";
+      } else {
+        if($("freePill")) $("freePill").style.display = "flex";
+        if($("freeLeft")) $("freeLeft").textContent = String(left);
+      }
     }
 
     (function init(){
