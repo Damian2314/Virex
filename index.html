@@ -51,10 +51,7 @@
     .brand h1{margin:0;font-size:18px;letter-spacing:.18em;text-transform:uppercase;line-height:1.15;}
     .brand small{display:block;margin-top:3px;font-size:12px;color:var(--muted);letter-spacing:.02em;}
 
-    .topRight{
-      display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;
-      position:relative; z-index:10; /* подняли, чтобы клики всегда работали */
-    }
+    .topRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end; position:relative; z-index:5;}
     .pill{
       display:flex;align-items:center;gap:10px;
       background:rgba(255,255,255,.04);
@@ -62,8 +59,6 @@
       padding:10px 12px;border-radius:999px;
       box-shadow: 0 10px 30px rgba(0,0,0,.28);
       backdrop-filter: blur(10px);
-      position:relative;
-      z-index:10;
     }
     .pill b{font-size:12px}
     .pill span{font-size:12px;color:var(--muted)}
@@ -80,9 +75,6 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
-      position:relative;  /* важно */
-      z-index:12;         /* важно — чтобы было кликабельно */
-      pointer-events:auto;
     }
     .btn:hover{border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.06)}
     .btn:active{transform: translateY(1px)}
@@ -269,18 +261,14 @@
       </div>
 
       <div class="topRight">
-        <!-- показываем только когда залогинен И free_left > 0 -->
-        <div class="pill" id="freePill" title="Free generations left (per account)" style="display:none;">
+        <!-- IMPORTANT: pill now has id so we can hide/show it correctly -->
+        <div class="pill" id="freePill" title="Free generations left (per account)">
           <b id="freeLabel">Free left</b>
           <span><span id="freeLeft">—</span></span>
         </div>
 
         <button class="btn" id="authBtn" type="button">Sign in</button>
-
-        <!-- важные styles чтобы было кликабельно -->
-        <button class="btn danger" id="signOutBtn" type="button" style="display:none; z-index:12; pointer-events:auto;">
-          Sign out
-        </button>
+        <button class="btn danger" id="signOutBtn" type="button" style="display:none;">Sign out</button>
       </div>
     </header>
 
@@ -401,6 +389,7 @@
             <option value="ru">Русский</option>
           </select>
         </div>
+
       </div>
     </footer>
   </div>
@@ -470,12 +459,13 @@
     const SUPABASE_URL = "https://yrcgqbgomzqtrssdyewd.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Uw04cxElgXksa7K-bUr4SA_sa85Z44C";
 
-    // ✅ IMPORTANT: explicit auth options so session persists after refresh
+    // Persist session + refresh tokens + detect auth callback in URL
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
+        storageKey: "virex_auth",
         storage: window.localStorage
       }
     });
@@ -664,19 +654,12 @@
       setStatus("Check your email. Click the link to sign in.", "ok");
     }
 
-    // ✅ FIXED: sign out реально работает + UI reset
     async function signOut(){
       try{
         await sb.auth.signOut();
       }catch(e){
-        console.error("Sign out failed:", e);
+        console.error(e);
       }
-
-      closeAuth();
-      setStatus("", "");
-      const emailEl = $("emailInput");
-      if(emailEl) emailEl.value = "";
-
       await refreshTopBar();
     }
 
@@ -699,28 +682,32 @@
       if($("cookieAccept")) $("cookieAccept").textContent = t.cookieAccept;
       if($("cookieDecline")) $("cookieDecline").textContent = t.cookieDecline;
 
-      // НЕ залогинен: скрываем pill, показываем Sign in
+      // NOT LOGGED IN:
       if(!user){
         if($("freeLeft")) $("freeLeft").textContent = "—";
-        if($("freePill")) $("freePill").style.display = "none";
+        if($("freePill")) $("freePill").style.display = "none"; // show only when logged in
         if($("authBtn")) $("authBtn").style.display = "inline-flex";
         if($("signOutBtn")) $("signOutBtn").style.display = "none";
         return;
       }
 
-      // Залогинен
+      // LOGGED IN:
       if($("authBtn")) $("authBtn").style.display = "none";
       if($("signOutBtn")) $("signOutBtn").style.display = "inline-flex";
 
       await ensureProfile(user);
       const left = await getFreeLeft(user);
 
-      // pill только когда left > 0
-      if(left === null || left <= 0){
-        if($("freePill")) $("freePill").style.display = "none";
-        if($("freeLeft")) $("freeLeft").textContent = left === null ? "—" : "0";
-      }else{
+      // show/hide pill based on free_left
+      if(left === null){
+        if($("freeLeft")) $("freeLeft").textContent = "—";
         if($("freePill")) $("freePill").style.display = "flex";
+      } else {
+        if(left <= 0){
+          if($("freePill")) $("freePill").style.display = "none";
+        } else {
+          if($("freePill")) $("freePill").style.display = "flex";
+        }
         if($("freeLeft")) $("freeLeft").textContent = String(left);
       }
     }
@@ -756,10 +743,12 @@
       if(modal) modal.addEventListener("click", (e)=> { if(e.target === modal) closeAuth(); });
       on("emailBtn","click", ()=> sendMagicLink(($("emailInput")?.value || "").trim()));
 
-      // ✅ два раза биндим, чтобы 100% работало
-      on("signOutBtn","click", signOut);
-      const so = $("signOutBtn");
-      if(so) so.addEventListener("click", signOut);
+      // IMPORTANT: make sign out always clickable and stop any bubbling
+      on("signOutBtn","click", async (e)=> {
+        e.preventDefault();
+        e.stopPropagation();
+        await signOut();
+      });
 
       // auth state changes
       sb.auth.onAuthStateChange(async (_event, session) => {
@@ -767,6 +756,7 @@
         await refreshTopBar();
       });
 
+      // On first load / refresh: restore session from storage
       refreshTopBar();
 
       // Tool buttons
