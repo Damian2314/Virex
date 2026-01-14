@@ -646,7 +646,18 @@
     }
 
     async function signOut(){
-      await sb.auth.signOut();
+      try{
+        await sb.auth.signOut();
+      }catch(e){
+        console.error("Sign out failed:", e);
+      }
+
+      // UI reset (чтобы всё выглядело чисто после выхода)
+      closeAuth();
+      setStatus("", "");
+      const emailEl = $("emailInput");
+      if(emailEl) emailEl.value = "";
+
       await refreshTopBar();
     }
 
