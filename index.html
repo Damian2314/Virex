@@ -75,7 +75,6 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
-      pointer-events:auto;
     }
     .btn:hover{border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.06)}
     .btn:active{transform: translateY(1px)}
@@ -389,6 +388,7 @@
             <option value="ru">Русский</option>
           </select>
         </div>
+
       </div>
     </footer>
   </div>
@@ -452,20 +452,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+    // -----------------------------
+    // Supabase (YOUR REAL KEYS)
+    // -----------------------------
     const SUPABASE_URL = "https://yrcgqbgomzqtrssdyewd.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Uw04cxElgXksa7K-bUr4SA_sa85Z44C";
 
-    // IMPORTANT: PKCE + session persist + storage key
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        flowType: "pkce",
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storageKey: "virex_auth",
-        storage: window.localStorage
-      }
-    });
+    // NEVER redeclare "supabase" elsewhere in this file.
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const I18N = {
       en: {
@@ -521,7 +515,32 @@
     function openAuth(){ setStatus("", ""); const m = $("authModal"); if(m) m.style.display = "flex"; }
     function closeAuth(){ const m = $("authModal"); if(m) m.style.display = "none"; }
 
-    // Profiles
+    // ✅ FIX: correctly exchange PKCE code for session (magic link)
+    async function handleAuthRedirectIfNeeded(){
+      try{
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get("code");
+
+        if(code){
+          const { data, error } = await sb.auth.exchangeCodeForSession(code);
+          if(error) console.error("exchangeCodeForSession error:", error);
+
+          // remove auth params from the URL
+          url.searchParams.delete("code");
+          url.searchParams.delete("type");
+          url.searchParams.delete("redirect_to");
+          window.history.replaceState({}, document.title, url.pathname + (url.search ? url.search : "") + url.hash);
+
+          await refreshTopBar();
+          return data?.session || null;
+        }
+      }catch(e){
+        console.error(e);
+      }
+      return null;
+    }
+
+    // Profiles (free attempts per account)
     async function ensureProfile(user){
       if(!user) return null;
       const email = user.email || null;
@@ -651,49 +670,13 @@
       setStatus("Check your email. Click the link to sign in.", "ok");
     }
 
-    // IMPORTANT: handle PKCE magic-link ?code=...
-    async function handleAuthRedirectIfNeeded(){
-      try{
-        const url = new URL(window.location.href);
-        const code = url.searchParams.get("code");
-        if(code){
-          // Exchange code -> session (PKCE)
-          const { error } = await sb.auth.exchangeCodeForSession(window.location.href);
-          if(error) console.error(error);
-
-          // Clean URL (remove ?code=... so refresh won't re-run weirdly)
-          url.searchParams.delete("code");
-          url.searchParams.delete("type");
-          url.searchParams.delete("redirect_to");
-          window.history.replaceState({}, document.title, url.pathname + (url.search ? url.search : "") + url.hash);
-        }
-      }catch(e){
-        console.error(e);
-      }
-    }
-
-    async function hardClearAuthStorage(){
-      // Supabase stores multiple keys (especially PKCE verifier)
-      try{
-        const keysToRemove = [
-          "virex_auth",
-          "virex_auth-code-verifier",
-          "sb-" + SUPABASE_URL.replace(/^https?:\/\//, "").replace(/\W/g, "-") + "-auth-token"
-        ];
-        keysToRemove.forEach(k => { try{ localStorage.removeItem(k); }catch(_){} });
-      }catch(e){
-        console.error(e);
-      }
-    }
-
     async function signOut(){
       try{
-        await sb.auth.signOut();
-      }catch(e){
-        console.error(e);
+        const { error } = await sb.auth.signOut();
+        if(error) console.error("signOut error:", error);
+      }finally{
+        await refreshTopBar();
       }
-      await hardClearAuthStorage();
-      await refreshTopBar();
     }
 
     async function refreshTopBar(){
@@ -715,37 +698,25 @@
       if($("cookieAccept")) $("cookieAccept").textContent = t.cookieAccept;
       if($("cookieDecline")) $("cookieDecline").textContent = t.cookieDecline;
 
-      // NOT LOGGED IN
+      // ✅ show free pill only when logged in
+      if($("freePill")) $("freePill").style.display = user ? "flex" : "none";
+
       if(!user){
         if($("freeLeft")) $("freeLeft").textContent = "—";
-        if($("freePill")) $("freePill").style.display = "none";
         if($("authBtn")) $("authBtn").style.display = "inline-flex";
         if($("signOutBtn")) $("signOutBtn").style.display = "none";
         return;
       }
 
-      // LOGGED IN
       if($("authBtn")) $("authBtn").style.display = "none";
       if($("signOutBtn")) $("signOutBtn").style.display = "inline-flex";
 
       await ensureProfile(user);
       const left = await getFreeLeft(user);
-
-      if(left === null){
-        if($("freeLeft")) $("freeLeft").textContent = "—";
-        if($("freePill")) $("freePill").style.display = "flex";
-      }else{
-        if(left <= 0){
-          if($("freePill")) $("freePill").style.display = "none";
-        }else{
-          if($("freePill")) $("freePill").style.display = "flex";
-        }
-        if($("freeLeft")) $("freeLeft").textContent = String(left);
-      }
+      if($("freeLeft")) $("freeLeft").textContent = (left === null ? "—" : String(left));
     }
 
-    // Init AFTER DOM ready
-    document.addEventListener("DOMContentLoaded", async () => {
+    (function init(){
       if($("year")) $("year").textContent = String(new Date().getFullYear());
 
       // language
@@ -769,31 +740,36 @@
       const pw = $("paywall");
       if(pw) pw.addEventListener("click", (e)=> { if(e.target === pw) hidePaywall(); });
 
-      // auth modal
+      // auth
       on("authBtn","click", openAuth);
       on("authClose","click", closeAuth);
       const modal = $("authModal");
       if(modal) modal.addEventListener("click", (e)=> { if(e.target === modal) closeAuth(); });
       on("emailBtn","click", ()=> sendMagicLink(($("emailInput")?.value || "").trim()));
 
-      // SIGN OUT (hard)
-      on("signOutBtn","click", async (e)=> {
-        e.preventDefault();
-        e.stopPropagation();
-        await signOut();
-      });
+      // ✅ make sign out always clickable + prevent any overlay issues
+      const so = $("signOutBtn");
+      if(so){
+        so.addEventListener("click", async (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          so.disabled = true;
+          await signOut();
+          so.disabled = false;
+        }, { passive:false });
+      }
 
-      // Auth state changes
+      // auth state changes
       sb.auth.onAuthStateChange(async (_event, session) => {
         if(session?.user) closeAuth();
         await refreshTopBar();
       });
 
-      // CRITICAL: exchange ?code=... to session (PKCE)
-      await handleAuthRedirectIfNeeded();
-
-      // Initial UI
-      await refreshTopBar();
+      // ✅ handle magic-link redirect first, then paint UI
+      (async ()=>{
+        await handleAuthRedirectIfNeeded();
+        await refreshTopBar();
+      })();
 
       // Tool buttons
       on("hGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("hOut").textContent = genHumanize($("hInput").value, $("hTone").value); });
@@ -807,7 +783,7 @@
       on("sGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("sOut").textContent = genSocial($("sInput").value, $("sPlatform").value); });
       on("sCopy","click", ()=> copyText($("sOut").textContent || ""));
       on("sSave","click", ()=> saveTxt("virex-social-post.txt", $("sOut").textContent || ""));
-    });
+    })();
   </script>
 </body>
 </html>
