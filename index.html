@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>VIREX — AI Writing Toolkit</title>
-  <meta name="description" content="VIREX — AI Writing Toolkit: Humanize, Cover Letter, Social Post." />
+  <meta name="description" content="VIREX — AI Writing Toolkit: Humanize, Cover Letter, Social Post, Code Check." />
   <meta name="theme-color" content="#0b0f19"/>
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -53,7 +53,8 @@
 
     .topRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end; position:relative; z-index:5;}
     .pill{
-      display:flex;align-items:center;gap:10px;
+      display:none; /* IMPORTANT: hidden by default */
+      align-items:center;gap:10px;
       background:rgba(255,255,255,.04);
       border:1px solid var(--line);
       padding:10px 12px;border-radius:999px;
@@ -75,7 +76,6 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
-      pointer-events:auto;
     }
     .btn:hover{border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.06)}
     .btn:active{transform: translateY(1px)}
@@ -90,7 +90,8 @@
     }
 
     .grid{display:grid;grid-template-columns: 1fr;gap:14px;margin-top:16px;}
-    @media(min-width: 960px){ .grid{grid-template-columns: 1fr 1fr 1fr;} }
+    @media(min-width: 960px){ .grid{grid-template-columns: 1fr 1fr;} }
+    @media(min-width: 1240px){ .grid{grid-template-columns: 1fr 1fr 1fr 1fr;} }
 
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
@@ -106,7 +107,6 @@
     .field{margin-top:10px;}
     .label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:7px;}
 
-    /* Select styling */
     .selectWrap{position:relative;width:100%;}
     select{
       width:100%;
@@ -255,6 +255,27 @@
       background: rgba(124,92,255,.10);
     }
 
+    /* Fullscreen gate */
+    .gate{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(10px);
+      z-index: 9997;
+      padding: 18px;
+    }
+    .gateCard{
+      width: min(620px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.7);
+      padding: 18px;
+    }
+    .gateCard h2{margin:0;font-size:18px;letter-spacing:.02em;}
+    .gateCard p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.55;}
+
     /* Cookie */
     .cookieBar{
       position:fixed;left:0; right:0; bottom:0;display:none;z-index:9998;
@@ -277,6 +298,21 @@
 </head>
 
 <body>
+  <!-- Fullscreen gate for guests -->
+  <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Sign in required">
+    <div class="gateCard">
+      <h2>Register / Sign in to get 2 free attempts</h2>
+      <p>To use VIREX tools, please sign in via email (magic link). No passwords.</p>
+      <div class="actions" style="margin-top:14px;">
+        <button class="btn primary" id="gateSignIn" type="button">Sign in</button>
+        <button class="btn" id="gateClose" type="button">Close</button>
+      </div>
+      <div class="small" style="margin-top:10px;">
+        By continuing, you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>.
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
     <header>
       <div class="brand">
@@ -301,6 +337,7 @@
     </header>
 
     <div class="grid">
+      <!-- 1 -->
       <section class="card">
         <div class="cardHeader">
           <h2>Humanize</h2>
@@ -335,6 +372,7 @@
         </div>
       </section>
 
+      <!-- 2 -->
       <section class="card">
         <div class="cardHeader">
           <h2>Cover Letter</h2>
@@ -368,6 +406,7 @@
         </div>
       </section>
 
+      <!-- 3 -->
       <section class="card">
         <div class="cardHeader">
           <h2>Social Post</h2>
@@ -400,6 +439,41 @@
           <div class="hint">Tip: one strong hook + 3 bullets + CTA works best on most platforms.</div>
         </div>
       </section>
+
+      <!-- 4 CODE CHECK -->
+      <section class="card">
+        <div class="cardHeader">
+          <h2>Code Check</h2>
+          <p>Check your code for mistakes and get a fixed version + notes.</p>
+        </div>
+        <div class="cardBody">
+          <div class="field">
+            <div class="label"><span>Language</span></div>
+            <div class="selectWrap">
+              <select id="codeLang">
+                <option value="javascript">JavaScript</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="python">Python</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="label"><span>Code</span></div>
+            <textarea id="codeInput" placeholder="Paste your code here..."></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="codeGen" type="button">Check</button>
+            <button class="btn" id="codeCopy" type="button">Copy</button>
+            <button class="btn" id="codeSave" type="button">Save .txt</button>
+          </div>
+
+          <div class="out" id="codeOut"></div>
+          <div class="hint">This tool uses your 2 free attempts (same counter).</div>
+        </div>
+      </section>
     </div>
 
     <footer>
@@ -424,16 +498,15 @@
   <!-- Paywall -->
   <div class="paywall" id="paywall">
     <div class="paywallCard" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
-      <h3 id="pwTitle">Upgrade to continue</h3>
-      <p id="pwText">You’ve used your free generations. Upgrade later (subscriptions will be added next).</p>
+      <h3 id="pwTitle">Free attempts are over</h3>
+      <p id="pwText">You used your 2 free attempts. Subscriptions will be added next.</p>
 
       <div class="paywallRow">
-        <button class="btn primary" id="pwUpgrade" type="button">Upgrade</button>
         <button class="btn" id="pwClose" type="button">Close</button>
       </div>
 
       <div class="small" id="pwSmall">
-        Next: promo codes, subscriptions, profile (avatar/name), and support email.
+        Next: promo codes, subscriptions, profile, support email.
       </div>
     </div>
   </div>
@@ -462,18 +535,18 @@
     </div>
   </div>
 
-  <!-- Profile onboarding (nickname + avatar) -->
+  <!-- Profile onboarding -->
   <div class="modal" id="profileModal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
     <div class="modalCard">
-      <h3 id="profileTitle">Finish your profile</h3>
-      <p id="profileSub">Pick a unique nickname and an avatar.</p>
+      <h3 id="profileTitle">Create your profile</h3>
+      <p id="profileSub">Choose a unique nickname and an avatar.</p>
 
       <div class="hr"></div>
 
       <div class="label" style="margin-bottom:8px;">
         <span>Nickname (unique)</span>
       </div>
-      <input class="input" id="nickInput" type="text" maxlength="20" placeholder="e.g. virexDamian" autocomplete="off" />
+      <input class="input" id="nickInput" type="text" maxlength="20" placeholder="e.g. DamianVirex" autocomplete="off" />
 
       <div class="label" style="margin-top:12px;margin-bottom:8px;">
         <span>Choose avatar</span>
@@ -483,12 +556,11 @@
 
       <div class="actions" style="margin-top:12px;">
         <button class="btn primary" id="saveProfileBtn" type="button">Save</button>
-        <button class="btn" id="profileClose" type="button">Later</button>
       </div>
 
       <div class="status" id="profileStatus"></div>
       <div class="small" style="margin-top:10px;">
-        Nickname must be 3–20 chars (letters/numbers/underscore). No duplicates.
+        Nickname must be 3–20 chars (letters/numbers/underscore). Must be unique.
       </div>
     </div>
   </div>
@@ -517,12 +589,12 @@
     const SUPABASE_URL = "https://yrcgqbgomzqtrssdyewd.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Uw04cxElgXksa7K-bUr4SA_sa85Z44C";
 
-    // Manual auth redirect handling (prevents weird double-detect issues)
+    // IMPORTANT: use defaults (persist + detect in URL) so magic link works "as it was"
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: false
+        detectSessionInUrl: true
       }
     });
 
@@ -557,7 +629,7 @@
     const LS_COOKIE = "virex_cookie_consent";
 
     const $ = (id) => document.getElementById(id);
-    const on = (id, evt, fn, opts) => { const el = $(id); if(el) el.addEventListener(evt, fn, opts || false); };
+    const on = (id, evt, fn) => { const el = $(id); if(el) el.addEventListener(evt, fn); };
 
     function setStatus(text, kind){
       const el = $("authStatus");
@@ -582,6 +654,10 @@
     function showPaywall(){ const p = $("paywall"); if(p) p.style.display = "flex"; }
     function hidePaywall(){ const p = $("paywall"); if(p) p.style.display = "none"; }
 
+    // Gate
+    function showGate(){ const g = $("gate"); if(g) g.style.display = "flex"; }
+    function hideGate(){ const g = $("gate"); if(g) g.style.display = "none"; }
+
     // Auth modal
     function openAuth(){ setStatus("", ""); const m = $("authModal"); if(m) m.style.display = "flex"; }
     function closeAuth(){ const m = $("authModal"); if(m) m.style.display = "none"; }
@@ -591,45 +667,7 @@
     function closeProfile(){ const m = $("profileModal"); if(m) m.style.display = "none"; }
 
     // -----------------------------
-    // Robust magic-link redirect handler
-    // Supports:
-    // - ?code=... (PKCE)
-    // - #access_token=...&refresh_token=... (implicit)
-    // -----------------------------
-    async function handleAuthRedirect(){
-      try{
-        const url = new URL(window.location.href);
-
-        // PKCE: ?code=...
-        const code = url.searchParams.get("code");
-        if(code){
-          const { error } = await sb.auth.exchangeCodeForSession(code);
-          if(error) console.error("exchangeCodeForSession error:", error);
-          // clean URL
-          url.searchParams.delete("code");
-          window.history.replaceState({}, document.title, url.pathname + (url.searchParams.toString() ? ("?" + url.searchParams.toString()) : ""));
-          return;
-        }
-
-        // Implicit: #access_token=...&refresh_token=...
-        if(url.hash && url.hash.includes("access_token=")){
-          const hash = new URLSearchParams(url.hash.replace(/^#/, ""));
-          const access_token = hash.get("access_token");
-          const refresh_token = hash.get("refresh_token");
-          if(access_token && refresh_token){
-            const { error } = await sb.auth.setSession({ access_token, refresh_token });
-            if(error) console.error("setSession error:", error);
-          }
-          // clean hash
-          window.history.replaceState({}, document.title, url.pathname + url.search);
-        }
-      }catch(e){
-        console.error("handleAuthRedirect failed:", e);
-      }
-    }
-
-    // -----------------------------
-    // Profiles (free attempts per account + username + avatar)
+    // Profiles table helpers
     // -----------------------------
     async function ensureProfile(user){
       if(!user) return null;
@@ -645,9 +683,9 @@
         const ins = await sb.from("profiles").insert({
           id: user.id,
           email: email,
+          free_left: 2,
           username: null,
-          avatar_key: null,
-          free_left: 2
+          avatar_key: null
         }).select("id,email,free_left,username,avatar_key").single();
         data = ins.data;
         error = ins.error;
@@ -683,25 +721,26 @@
       return true;
     }
 
-    async function requireAuthOrOpen(){
+    // Require auth: if not logged -> show gate + auth modal
+    async function requireAuthOrShow(){
       const { data } = await sb.auth.getSession();
       if(data.session?.user) return data.session.user;
-      openAuth();
+      showGate();
       return null;
     }
 
     async function consumeAttemptOrPaywall(){
-      const user = await requireAuthOrOpen();
+      const user = await requireAuthOrShow();
       if(!user) return false;
 
       await ensureProfile(user);
       const left = await getFreeLeft(user);
 
-      if(left === null){ openAuth(); return false; }
+      if(left === null){ showGate(); return false; }
       if(left <= 0){ showPaywall(); return false; }
 
       await setFreeLeft(user, left - 1);
-      await refreshTopBar();
+      await refreshUI();
       return true;
     }
 
@@ -725,7 +764,7 @@
       URL.revokeObjectURL(a.href);
     }
 
-    // Demo generators
+    // Demo generators (you can later connect to /api/generate)
     function genHumanize(input, tone){
       if(!input.trim()) return "";
       const prefix = tone === "formal" ? "Refined version:\n"
@@ -749,6 +788,27 @@
       return head + "—\n" + topic.trim();
     }
 
+    async function genCodeCheck(code, lang){
+      if(!code.trim()) return "";
+      // If you have /api/check-code.js -> it will work.
+      // If not, fallback to simple text output.
+      try{
+        const res = await fetch("/api/check-code", {
+          method:"POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify({ code, lang })
+        });
+        if(res.ok){
+          const data = await res.json();
+          // expected: { result: "..." } or { text: "..." }
+          return data.result || data.text || JSON.stringify(data, null, 2);
+        }
+      }catch(e){
+        console.error(e);
+      }
+      return "Code check API not configured yet.\n\nYour code:\n" + code.trim();
+    }
+
     async function sendMagicLink(email){
       setStatus("Sending magic link…", "");
       if(!email || !email.includes("@")){ setStatus("Enter a valid email.", "err"); return; }
@@ -756,7 +816,7 @@
       const { error } = await sb.auth.signInWithOtp({
         email,
         options: {
-          // IMPORTANT: redirect to site root (matches allowlist reliably)
+          // IMPORTANT: redirect to site root (works with your allowlist)
           emailRedirectTo: window.location.origin
         }
       });
@@ -771,10 +831,11 @@
       }catch(e){
         console.error("signOut failed:", e);
       }
-      await refreshTopBar();
+      await refreshUI();
+      showGate(); // after sign out show gate
     }
 
-    // Profile onboarding helpers
+    // Profile onboarding
     const AVATARS = [
       { key: "a1", emoji: "🧠" },
       { key: "a2", emoji: "⚡" },
@@ -797,7 +858,6 @@
         const b = document.createElement("button");
         b.type = "button";
         b.className = "avatarBtn" + (a.key === selectedAvatarKey ? " sel" : "");
-        b.setAttribute("data-key", a.key);
         b.textContent = a.emoji;
         b.addEventListener("click", (e) => {
           e.preventDefault(); e.stopPropagation();
@@ -811,22 +871,7 @@
 
     function normalizeNick(raw){
       const nick = (raw || "").trim();
-      // allow letters/numbers/underscore only
-      const cleaned = nick.replace(/[^\w]/g, "");
-      return cleaned;
-    }
-
-    async function maybeOpenProfileOnboarding(user){
-      if(!user) return;
-      const prof = await ensureProfile(user);
-      if(!prof) return;
-      if(!prof.username || !prof.avatar_key){
-        renderAvatars();
-        $("nickInput").value = prof.username || "";
-        selectedAvatarKey = prof.avatar_key || "a1";
-        renderAvatars();
-        openProfile();
-      }
+      return nick.replace(/[^\w]/g, ""); // letters/numbers/underscore
     }
 
     async function saveProfile(user){
@@ -839,7 +884,6 @@
         return;
       }
 
-      // try update (username is UNIQUE in DB)
       const { error } = await sb
         .from("profiles")
         .update({
@@ -851,10 +895,9 @@
 
       if(error){
         console.error(error);
-        // most common: duplicate nickname
         const msg = (error.message || "").toLowerCase();
         if(msg.includes("duplicate") || msg.includes("unique")){
-          setProfileStatus("Nickname is taken. Try another one.", "err");
+          setProfileStatus("Nickname is taken. Try another.", "err");
           return;
         }
         setProfileStatus(error.message || "Failed to save.", "err");
@@ -862,11 +905,11 @@
       }
 
       setProfileStatus("Saved!", "ok");
-      setTimeout(() => closeProfile(), 450);
-      await refreshTopBar();
+      setTimeout(() => closeProfile(), 400);
+      await refreshUI();
     }
 
-    async function refreshTopBar(){
+    async function refreshUI(){
       const { data } = await sb.auth.getSession();
       const user = data.session?.user || null;
 
@@ -885,38 +928,53 @@
       if($("cookieAccept")) $("cookieAccept").textContent = t.cookieAccept;
       if($("cookieDecline")) $("cookieDecline").textContent = t.cookieDecline;
 
-      // pill visibility logic:
-      // - hidden if not logged in
-      // - hidden if free_left <= 0
+      // DEFAULT states
       if($("freePill")) $("freePill").style.display = "none";
+      if($("authBtn")) $("authBtn").style.display = "inline-flex";
+      if($("signOutBtn")) $("signOutBtn").style.display = "none";
 
       if(!user){
         if($("freeLeft")) $("freeLeft").textContent = "—";
-        if($("authBtn")) $("authBtn").style.display = "inline-flex";
-        if($("signOutBtn")) $("signOutBtn").style.display = "none";
+        showGate();              // guest must sign in
+        hidePaywall();
         return;
       }
 
+      // logged in
+      hideGate();
       if($("authBtn")) $("authBtn").style.display = "none";
       if($("signOutBtn")) $("signOutBtn").style.display = "inline-flex";
 
       const prof = await ensureProfile(user);
       const left = await getFreeLeft(user);
+
       if($("freeLeft")) $("freeLeft").textContent = (left === null ? "—" : String(left));
 
+      // Free left pill rules:
+      // - show ONLY when logged in
+      // - hide when attempts are 0
       if(left !== null && left > 0){
         if($("freePill")) $("freePill").style.display = "flex";
+        hidePaywall();
       }else{
         if($("freePill")) $("freePill").style.display = "none";
+        if(left !== null && left <= 0){
+          showPaywall();
+        }else{
+          hidePaywall();
+        }
       }
 
-      // if profile incomplete -> onboarding
+      // Profile must be set: open modal until saved
       if(prof && (!prof.username || !prof.avatar_key)){
+        selectedAvatarKey = prof.avatar_key || "a1";
+        renderAvatars();
+        $("nickInput").value = prof.username || "";
         openProfile();
       }
     }
 
-    (async function init(){
+    (function init(){
       if($("year")) $("year").textContent = String(new Date().getFullYear());
 
       // language
@@ -925,7 +983,7 @@
         $("langSelect").value = savedLang;
         on("langSelect","change", (e)=> {
           localStorage.setItem(LS_LANG, e.target.value);
-          refreshTopBar();
+          refreshUI();
         });
       }
 
@@ -936,53 +994,41 @@
 
       // paywall
       on("pwClose","click", hidePaywall);
-      on("pwUpgrade","click", ()=> alert("Subscriptions will be added next."));
-      const pw = $("paywall");
-      if(pw) pw.addEventListener("click", (e)=> { if(e.target === pw) hidePaywall(); });
 
-      // auth
-      on("authBtn","click", (e)=> { e.preventDefault(); e.stopPropagation(); openAuth(); }, true);
-      on("authClose","click", (e)=> { e.preventDefault(); e.stopPropagation(); closeAuth(); }, true);
+      // gate
+      on("gateSignIn","click", ()=> { openAuth(); });
+      on("gateClose","click", ()=> { /* optional: keep gate open, but allow close */ hideGate(); });
+
+      // auth modal
+      on("authBtn","click", openAuth);
+      on("authClose","click", closeAuth);
+
       const modal = $("authModal");
       if(modal) modal.addEventListener("click", (e)=> { if(e.target === modal) closeAuth(); });
 
-      on("emailBtn","click", (e)=> {
-        e.preventDefault(); e.stopPropagation();
-        sendMagicLink(($("emailInput")?.value || "").trim());
-      }, true);
+      on("emailBtn","click", ()=> sendMagicLink(($("emailInput")?.value || "").trim()));
 
-      // IMPORTANT: sign out must always fire
-      on("signOutBtn","click", async (e)=> {
-        e.preventDefault(); e.stopPropagation();
-        await signOut();
-      }, true);
+      // IMPORTANT: sign out always works
+      on("signOutBtn","click", (e)=> { e.preventDefault(); e.stopPropagation(); signOut(); });
 
-      // profile modal events
+      // profile modal
       renderAvatars();
-      on("saveProfileBtn","click", async (e)=>{
-        e.preventDefault(); e.stopPropagation();
+      on("saveProfileBtn","click", async ()=> {
         const { data } = await sb.auth.getSession();
         const user = data.session?.user || null;
         await saveProfile(user);
-      }, true);
-      on("profileClose","click", (e)=>{ e.preventDefault(); e.stopPropagation(); closeProfile(); }, true);
-      const pmodal = $("profileModal");
-      if(pmodal) pmodal.addEventListener("click", (e)=> { if(e.target === pmodal) closeProfile(); });
+      });
 
-      // 1) Handle magic-link redirect (makes login work + fixes refresh logout)
-      await handleAuthRedirect();
-
-      // 2) Keep UI synced with auth state
+      // auth state changes
       sb.auth.onAuthStateChange(async (_event, session) => {
         if(session?.user){
           closeAuth();
-          await maybeOpenProfileOnboarding(session.user);
         }
-        await refreshTopBar();
+        await refreshUI();
       });
 
-      // 3) Initial refresh
-      await refreshTopBar();
+      // initial UI
+      refreshUI();
 
       // Tool buttons
       on("hGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("hOut").textContent = genHumanize($("hInput").value, $("hTone").value); });
@@ -996,6 +1042,15 @@
       on("sGen","click", async ()=>{ if(!await consumeAttemptOrPaywall()) return; $("sOut").textContent = genSocial($("sInput").value, $("sPlatform").value); });
       on("sCopy","click", ()=> copyText($("sOut").textContent || ""));
       on("sSave","click", ()=> saveTxt("virex-social-post.txt", $("sOut").textContent || ""));
+
+      on("codeGen","click", async ()=>{
+        if(!await consumeAttemptOrPaywall()) return;
+        $("codeOut").textContent = "Checking…";
+        const out = await genCodeCheck($("codeInput").value, $("codeLang").value);
+        $("codeOut").textContent = out;
+      });
+      on("codeCopy","click", ()=> copyText($("codeOut").textContent || ""));
+      on("codeSave","click", ()=> saveTxt("virex-code-check.txt", $("codeOut").textContent || ""));
     })();
   </script>
 </body>
